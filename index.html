@@ -1396,5 +1396,133 @@
     drawStars();
   </script>
 
+  <!-- Call UI: WebRTC with BroadcastChannel signaling, call history in chat, connection strength -->
+  <div id="callWindow" class="call-window hidden" style="right:22px;top:80px;width:360px;height:220px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.03)">
+      <div>
+        <strong id="callTitle">No active call</strong>
+        <div style="font-size:12px;color:#98a0b3" id="callTimestamp">—</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button id="callFullscreen" style="padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03);border:0">⤢</button>
+        <button id="callEnd" style="padding:6px 10px;border-radius:8px;background:#f04747;border:0;color:white">End</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;padding:8px;height:130px;">
+      <video id="callRemote" autoplay playsinline style="flex:1;background:#000;border-radius:8px;object-fit:cover"></video>
+      <video id="callLocal" autoplay playsinline muted style="width:140px;height:100px;border-radius:8px;object-fit:cover"></video>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid rgba(255,255,255,0.03)">
+      <div style="display:flex;gap:12px;align-items:center;color:#98a0b3;font-size:13px">
+        <div id="strengthBars" style="display:inline-flex;align-items:center;gap:8px">
+          <div id="bars" style="width:18px;height:12px;position:relative">
+            <i style="position:absolute;left:0;bottom:0;width:3px;height:4px;background:#2f3948;border-radius:2px"></i>
+            <i style="position:absolute;left:5px;bottom:0;width:3px;height:8px;background:#2f3948;border-radius:2px"></i>
+            <i style="position:absolute;left:10px;bottom:0;width:3px;height:12px;background:#2f3948;border-radius:2px"></i>
+          </div>
+          <div id="strengthText" style="font-size:12px;color:#98a0b3">Weak</div>
+        </div>
+        <div id="callDuration" style="font-size:13px;color:#98a0b3">00:00</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button id="callMute" style="padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03);border:0">Mute</button>
+        <button id="callVideo" style="padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03);border:0">Video</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      // Minimal WebRTC call implementation using BroadcastChannel for signaling between tabs (same-origin).
+      const bc = new BroadcastChannel('galaxytalk-signaling');
+      const selfId = Math.random().toString(36).slice(2,9);
+      const callWindow = document.getElementById('callWindow');
+      const remoteVid = document.getElementById('callRemote');
+      const localVid = document.getElementById('callLocal');
+      const callTitle = document.getElementById('callTitle');
+      const callTimestamp = document.getElementById('callTimestamp');
+      const callEnd = document.getElementById('callEnd');
+      const callFullscreen = document.getElementById('callFullscreen');
+      const bars = document.getElementById('bars');
+      const strengthText = document.getElementById('strengthText');
+      const callDuration = document.getElementById('callDuration');
+      const callMute = document.getElementById('callMute');
+      const callVideo = document.getElementById('callVideo');
+
+      let pc = null; let localStream = null; let remoteStream = null; let statsTimer = null; let startTime = null; let bytesPrev = 0;
+      let muted = false; let videoOn = true;
+
+      function showCallWindow(){ callWindow.classList.remove('hidden'); }
+      function hideCallWindow(){ callWindow.classList.add('hidden'); }
+
+      async function ensureLocal(){
+        if(!localStream){
+          try{
+            localStream = await navigator.mediaDevices.getUserMedia({audio:true, video: videoOn});
+            localVid.srcObject = localStream;
+          }catch(e){ alert('Failed to access mic/camera: '+e.message); }
+        } else {
+          localStream.getVideoTracks().forEach(t=>t.enabled = videoOn);
+        }
+      }
+
+      function createPC(){
+        pc = new RTCPeerConnection({iceServers:[{urls:['stun:stun.l.google.com:19302']}]});
+        remoteStream = new MediaStream(); remoteVid.srcObject = remoteStream;
+        pc.ontrack = e => { e.streams[0].getTracks().forEach(t=>remoteStream.addTrack(t)); };
+        pc.onconnectionstatechange = ()=>{ if(pc && pc.connectionState==='connected'){ startDuration(); } if(pc && (pc.connectionState==='disconnected' || pc.connectionState==='failed' || pc.connectionState==='closed')) { endCall('Disconnected'); } };
+        pc.onicecandidate = e=>{ if(e.candidate) bc.postMessage({type:'candidate', from:selfId, candidate:e.candidate}); };
+        if(localStream) localStream.getTracks().forEach(t=>pc.addTrack(t, localStream));
+        if(statsTimer) clearInterval(statsTimer); statsTimer = setInterval(updateStats,1500); bytesPrev = 0;
+      }
+
+      async function startOffer(){
+        await ensureLocal(); createPC(); showCallWindow(); callTitle.textContent='Calling...'; callTimestamp.textContent=new Date().toLocaleString();
+        const offer = await pc.createOffer(); await pc.setLocalDescription(offer); bc.postMessage({type:'offer', from:selfId, sdp:offer});
+      }
+
+      async function handleOffer(msg){ if(msg.from===selfId) return; if(pc) { if(!confirm('Incoming call — accept?')) return; endCall('Replaced'); }
+        await ensureLocal(); createPC(); await pc.setRemoteDescription(new RTCSessionDescription(msg.sdp)); const answer = await pc.createAnswer(); await pc.setLocalDescription(answer); bc.postMessage({type:'answer', from:selfId, sdp:answer}); showCallWindow(); callTitle.textContent='In Call'; callTimestamp.textContent=new Date().toLocaleString(); startTime = Date.now(); }
+
+      async function handleAnswer(msg){ if(msg.from===selfId) return; if(!pc) return; await pc.setRemoteDescription(new RTCSessionDescription(msg.sdp)); callTitle.textContent='In Call'; callTimestamp.textContent=new Date().toLocaleString(); startTime = Date.now(); }
+
+      async function handleCandidate(msg){ if(msg.from===selfId) return; if(!pc) return; try{ await pc.addIceCandidate(msg.candidate);}catch(e){} }
+
+      bc.onmessage = e=>{ const msg = e.data; if(!msg) return; if(msg.type==='offer') handleOffer(msg); if(msg.type==='answer') handleAnswer(msg); if(msg.type==='candidate') handleCandidate(msg); };
+
+      async function updateStats(){ if(!pc) return; try{ const stats = await pc.getStats(); let bytes=0, rtt=0; stats.forEach(r=>{ if(r.type==='inbound-rtp' && r.kind==='video') bytes += r.bytesReceived||0; if(r.type==='candidate-pair' && r.currentRoundTripTime!=null) rtt = r.currentRoundTripTime*1000; }); let bitrate=0; if(bytesPrev) bitrate = ((bytes-bytesPrev)*8)/1.5; bytesPrev = bytes; let strength='Weak'; bars.querySelectorAll('i').forEach(i=>i.style.background='#2f3948'); if(bitrate>2000 || rtt<100){ strength='Strong'; bars.querySelectorAll('i').forEach((i,idx)=>i.style.background=idx===0?'#2fe08f':'#2fe08f'); } else if(bitrate>500 || rtt<250){ strength='Medium'; bars.querySelectorAll('i').forEach(i=>i.style.background='#f2cf3f'); } else { strength='Weak'; bars.querySelectorAll('i').forEach(i=>i.style.background='#f27b7b'); } strengthText.textContent=strength; }catch(e){}}
+
+      function startDuration(){ if(!startTime) startTime = Date.now(); (function tick(){ if(!startTime) return; callDuration.textContent = Math.floor((Date.now()-startTime)/1000/60) + ':' + String(Math.floor((Date.now()-startTime)/1000)%60).padStart(2,'0'); requestAnimationFrame(tick); })(); }
+
+      function endCall(reason='Ended'){ // push to chat history in messages area
+        const duration = startTime?callDuration.textContent:'00:00';
+        const rec = { kind: 'Call', timestamp: new Date().toLocaleString(), duration, strength: strengthText.textContent||'Unknown', reason };
+        try{ const key = 'galaxytalk_history'; const raw = localStorage.getItem(key); const arr = raw?JSON.parse(raw):[]; arr.unshift(rec); localStorage.setItem(key, JSON.stringify(arr.slice(0,50))); // render into messages area
+          const container = document.getElementById('messages'); const el = document.createElement('div'); el.className='msg'; el.innerHTML = `<div style="font-weight:700">${rec.kind} • <span style='font-weight:400;font-size:12px;color:#98a0b3'>${rec.timestamp}</span></div><div style='font-size:13px;color:#b9bbbe'>Duration: ${rec.duration} • Strength: ${rec.strength} • ${rec.reason}</div>`; container.prepend(el);
+        }catch(e){}
+        if(statsTimer){ clearInterval(statsTimer); statsTimer=null; }
+        if(pc){ try{ pc.close(); }catch(e){} pc=null; }
+        if(localStream){ localStream.getTracks().forEach(t=>t.stop()); localStream=null; }
+        remoteVid.srcObject = null; localVid.srcObject = null; hideCallWindow(); startTime=null; callDuration.textContent='00:00'; callTitle.textContent='No active call';
+      }
+
+      // UI bindings
+      document.getElementById('callEnd').addEventListener('click', ()=>endCall('User ended'));
+      document.getElementById('callFullscreen').addEventListener('click', ()=>{ callWindow.classList.toggle('fullscreen'); if(callWindow.classList.contains('fullscreen')){ callWindow.style.left='0'; callWindow.style.top='0'; callWindow.style.right='0'; callWindow.style.width='100%'; callWindow.style.height='100%'; } else { callWindow.style.right='22px'; callWindow.style.top='80px'; callWindow.style.width='360px'; callWindow.style.height='220px'; } });
+      document.getElementById('callMute').addEventListener('click', ()=>{ muted=!muted; if(localStream) localStream.getAudioTracks().forEach(t=>t.enabled=!muted); callMute.textContent = muted? 'Unmute' : 'Mute'; });
+      document.getElementById('callVideo').addEventListener('click', async ()=>{ videoOn=!videoOn; if(localStream) localStream.getVideoTracks().forEach(t=>t.enabled=videoOn); callVideo.textContent = videoOn? 'Video' : 'No Video'; if(!localStream) await ensureLocal(); });
+
+      // Initiation helper: add quick Start Call button to the interface (sidebar header)
+      const startBtn = document.createElement('button'); startBtn.textContent='Start Call'; startBtn.style.marginTop='8px'; startBtn.style.padding='8px'; startBtn.style.borderRadius='8px'; startBtn.style.border='none'; startBtn.style.background='linear-gradient(135deg,#5865f2,#7c3aed)'; startBtn.style.color='white'; startBtn.onclick = ()=> startOffer();
+      const sh = document.getElementById('sidebarHeader'); if(sh) sh.appendChild(startBtn);
+
+      // clean up on page unload
+      window.addEventListener('beforeunload', ()=>{ if(pc) try{ pc.close(); }catch(e){} });
+
+      // Expose for debugging
+      window.GalaxyCall = { startOffer, endCall };
+    })();
+  </script>
+
 </body>
 </html>
