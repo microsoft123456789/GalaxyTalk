@@ -392,13 +392,123 @@
       background: rgba(255, 255, 255, 0.2);
     }
 
-    #settingsPopup {
+    #callActionPanel {
       position: fixed;
-      inset: 0;
-      background: #0e0018;
+      top: 18px;
+      right: 18px;
       display: flex;
-      z-index: 1000;
+      gap: 8px;
+      z-index: 110;
+      flex-wrap: wrap;
+      align-items: center;
     }
+
+    .call-action-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(124, 58, 237, 0.9);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      min-width: 110px;
+    }
+
+    .call-action-btn:hover {
+      background: #7c3aed;
+    }
+
+    #callWindow {
+      position: fixed;
+      right: 22px;
+      top: 80px;
+      width: 360px;
+      height: 220px;
+      background: rgba(10, 4, 28, 0.96);
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+      z-index: 105;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #callWindow.fullscreen {
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      width: auto;
+      height: auto;
+      border-radius: 0;
+    }
+
+    #callWindow.hide {
+      display: none;
+    }
+
+    #callWindow video {
+      background: #000;
+      border-radius: 14px;
+      object-fit: cover;
+    }
+
+    #callWindow .call-header,
+    #callWindow .call-footer {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #callWindow .call-body {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      flex: 1;
+    }
+
+    #callWindow .call-body .preview {
+      width: 140px;
+      height: 100px;
+    }
+
+    #callWindow .pill-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e6eef6;
+      cursor: pointer;
+    }
+
+    #callWindow .pill-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    #callWindow .label-small {
+      font-size: 12px;
+      color: #98a0b3;
+    }
+
+    #callWindow .strength-bar {
+      display: inline-flex;
+      gap: 5px;
+      align-items: flex-end;
+    }
+
+    #callWindow .strength-bar span {
+      display: block;
+      width: 4px;
+      border-radius: 999px;
+      background: #2f3948;
+      transition: background .2s;
+    }
+
+    #callWindow .strength-bar span:nth-child(1) { height: 5px; }
+    #callWindow .strength-bar span:nth-child(2) { height: 8px; }
+    #callWindow .strength-bar span:nth-child(3) { height: 12px; }
 
     #settingsPopup.hidden {
       display: none;
@@ -647,6 +757,11 @@
   <canvas id="space"></canvas>
 
   <button id="settingsBtn" class="hidden" onclick="toggleSettings()">⚙️</button>
+  <div id="callActionPanel" class="hidden">
+    <button id="voiceCallBtn" class="call-action-btn">Voice Call</button>
+    <button id="videoCallBtn" class="call-action-btn">Video Call</button>
+    <button id="joinCodeBtn" class="call-action-btn">Join Code</button>
+  </div>
 
   <div id="settingsPopup" class="hidden">
     <div class="settings-sidebar">
@@ -914,6 +1029,7 @@
 
       loadUsers();
       openChat("global");
+      initCallSystem();
     }
 
     function getVisibleUsers() {
@@ -1077,10 +1193,14 @@
       if (me === "test" && u !== "Elnathan") return;
 
       chat = u === "global" ? "global" : [me, u].sort().join("_");
+      window.currentChatPeer = u === "global" ? null : u;
       messages.innerHTML = "";
+      const existingHistory = messages.querySelectorAll('.call-history-entry');
+      existingHistory.forEach(node => node.remove());
       db.ref("messages/" + chat).off();
 
       // Step 1: Load all existing messages once, sort by time, insert placeholders IN ORDER
+      renderSavedCallHistory();
       db.ref("messages/" + chat).once("value").then(snapshot => {
         const msgArray = [];
         snapshot.forEach(child => msgArray.push({key: child.key, data: child.val()}));
@@ -1396,51 +1516,50 @@
     drawStars();
   </script>
 
-  <!-- Call UI: WebRTC with BroadcastChannel signaling, call history in chat, connection strength -->
-  <div id="callWindow" class="call-window hidden" style="right:22px;top:80px;width:360px;height:220px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.03)">
+  <div id="callWindow" class="hidden">
+    <div class="call-header">
       <div>
         <strong id="callTitle">No active call</strong>
-        <div style="font-size:12px;color:#98a0b3" id="callTimestamp">—</div>
+        <div id="callTimestamp" class="label-small">—</div>
+        <div id="callStatus" class="label-small">Ready</div>
+        <div id="callJoinCode" class="label-small"></div>
       </div>
       <div style="display:flex;gap:6px;align-items:center">
-        <button id="callFullscreen" style="padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03);border:0">⤢</button>
-        <button id="callEnd" style="padding:6px 10px;border-radius:8px;background:#f04747;border:0;color:white">End</button>
+        <button id="callFullscreen" class="pill-btn">⤢</button>
+        <button id="callEnd" class="pill-btn" style="background:#f04747;color:white">End</button>
       </div>
     </div>
-    <div style="display:flex;gap:8px;padding:8px;height:130px;">
-      <video id="callRemote" autoplay playsinline style="flex:1;background:#000;border-radius:8px;object-fit:cover"></video>
-      <video id="callLocal" autoplay playsinline muted style="width:140px;height:100px;border-radius:8px;object-fit:cover"></video>
+    <div class="call-body">
+      <video id="callRemote" autoplay playsinline></video>
+      <video id="callLocal" autoplay playsinline muted class="preview"></video>
     </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid rgba(255,255,255,0.03)">
-      <div style="display:flex;gap:12px;align-items:center;color:#98a0b3;font-size:13px">
-        <div id="strengthBars" style="display:inline-flex;align-items:center;gap:8px">
-          <div id="bars" style="width:18px;height:12px;position:relative">
-            <i style="position:absolute;left:0;bottom:0;width:3px;height:4px;background:#2f3948;border-radius:2px"></i>
-            <i style="position:absolute;left:5px;bottom:0;width:3px;height:8px;background:#2f3948;border-radius:2px"></i>
-            <i style="position:absolute;left:10px;bottom:0;width:3px;height:12px;background:#2f3948;border-radius:2px"></i>
-          </div>
-          <div id="strengthText" style="font-size:12px;color:#98a0b3">Weak</div>
-        </div>
-        <div id="callDuration" style="font-size:13px;color:#98a0b3">00:00</div>
+    <div class="call-footer">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <div class="strength-bar" id="bars"><span></span><span></span><span></span></div>
+        <div id="strengthText" class="label-small">Weak</div>
+        <div id="callDuration" class="label-small">00:00</div>
       </div>
-      <div style="display:flex;gap:8px">
-        <button id="callMute" style="padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03);border:0">Mute</button>
-        <button id="callVideo" style="padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03);border:0">Video</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button id="callMute" class="pill-btn">Mute</button>
+        <button id="callVideo" class="pill-btn">Video</button>
+        <button id="shareScreenBtn" class="pill-btn">Screen</button>
       </div>
     </div>
   </div>
 
   <script>
     (function(){
-      // Minimal WebRTC call implementation using BroadcastChannel for signaling between tabs (same-origin).
-      const bc = new BroadcastChannel('galaxytalk-signaling');
-      const selfId = Math.random().toString(36).slice(2,9);
+      const callActionPanel = document.getElementById('callActionPanel');
+      const voiceCallBtn = document.getElementById('voiceCallBtn');
+      const videoCallBtn = document.getElementById('videoCallBtn');
+      const joinCodeBtn = document.getElementById('joinCodeBtn');
       const callWindow = document.getElementById('callWindow');
       const remoteVid = document.getElementById('callRemote');
       const localVid = document.getElementById('callLocal');
       const callTitle = document.getElementById('callTitle');
       const callTimestamp = document.getElementById('callTimestamp');
+      const callStatus = document.getElementById('callStatus');
+      const callJoinCode = document.getElementById('callJoinCode');
       const callEnd = document.getElementById('callEnd');
       const callFullscreen = document.getElementById('callFullscreen');
       const bars = document.getElementById('bars');
@@ -1448,79 +1567,71 @@
       const callDuration = document.getElementById('callDuration');
       const callMute = document.getElementById('callMute');
       const callVideo = document.getElementById('callVideo');
+      const shareScreenBtn = document.getElementById('shareScreenBtn');
 
-      let pc = null; let localStream = null; let remoteStream = null; let statsTimer = null; let startTime = null; let bytesPrev = 0;
-      let muted = false; let videoOn = true;
+      const callRoomsRef = db.ref('callRooms');
+      const userCallRoomsRef = db.ref('userCallRooms');
+      const callSignalsRef = db.ref('callSignals');
 
-      function showCallWindow(){ callWindow.classList.remove('hidden'); }
-      function hideCallWindow(){ callWindow.classList.add('hidden'); }
+      let currentCallRoomId = null;
+      let currentCallRoomMeta = null;
+      let roomSignalRef = null;
+      let pc = null;
+      let localStream = null;
+      let remoteStream = null;
+      let screenTrack = null;
+      let statsTimer = null;
+      let callTimer = null;
+      let startTime = null;
+      let bytesPrev = 0;
+      let muted = false;
+      let videoOn = true;
+      const incomingPrompted = new Set();
 
-      async function ensureLocal(){
-        if(!localStream){
-          try{
-            localStream = await navigator.mediaDevices.getUserMedia({audio:true, video: videoOn});
-            localVid.srcObject = localStream;
-          }catch(e){ alert('Failed to access mic/camera: '+e.message); }
-        } else {
-          localStream.getVideoTracks().forEach(t=>t.enabled = videoOn);
-        }
-      }
-
-      function createPC(){
-        pc = new RTCPeerConnection({iceServers:[{urls:['stun:stun.l.google.com:19302']}]});
-        remoteStream = new MediaStream(); remoteVid.srcObject = remoteStream;
-        pc.ontrack = e => { e.streams[0].getTracks().forEach(t=>remoteStream.addTrack(t)); };
-        pc.onconnectionstatechange = ()=>{ if(pc && pc.connectionState==='connected'){ startDuration(); } if(pc && (pc.connectionState==='disconnected' || pc.connectionState==='failed' || pc.connectionState==='closed')) { endCall('Disconnected'); } };
-        pc.onicecandidate = e=>{ if(e.candidate) bc.postMessage({type:'candidate', from:selfId, candidate:e.candidate}); };
-        if(localStream) localStream.getTracks().forEach(t=>pc.addTrack(t, localStream));
-        if(statsTimer) clearInterval(statsTimer); statsTimer = setInterval(updateStats,1500); bytesPrev = 0;
-      }
-
-      async function startOffer(){
-        await ensureLocal(); createPC(); showCallWindow(); callTitle.textContent='Calling...'; callTimestamp.textContent=new Date().toLocaleString();
-        const offer = await pc.createOffer(); await pc.setLocalDescription(offer); bc.postMessage({type:'offer', from:selfId, sdp:offer});
-      }
-
-      async function handleOffer(msg){ if(msg.from===selfId) return; if(pc) { if(!confirm('Incoming call — accept?')) return; endCall('Replaced'); }
-        await ensureLocal(); createPC(); await pc.setRemoteDescription(new RTCSessionDescription(msg.sdp)); const answer = await pc.createAnswer(); await pc.setLocalDescription(answer); bc.postMessage({type:'answer', from:selfId, sdp:answer}); showCallWindow(); callTitle.textContent='In Call'; callTimestamp.textContent=new Date().toLocaleString(); startTime = Date.now(); }
-
-      async function handleAnswer(msg){ if(msg.from===selfId) return; if(!pc) return; await pc.setRemoteDescription(new RTCSessionDescription(msg.sdp)); callTitle.textContent='In Call'; callTimestamp.textContent=new Date().toLocaleString(); startTime = Date.now(); }
-
-      async function handleCandidate(msg){ if(msg.from===selfId) return; if(!pc) return; try{ await pc.addIceCandidate(msg.candidate);}catch(e){} }
-
-      bc.onmessage = e=>{ const msg = e.data; if(!msg) return; if(msg.type==='offer') handleOffer(msg); if(msg.type==='answer') handleAnswer(msg); if(msg.type==='candidate') handleCandidate(msg); };
-
-      async function updateStats(){ if(!pc) return; try{ const stats = await pc.getStats(); let bytes=0, rtt=0; stats.forEach(r=>{ if(r.type==='inbound-rtp' && r.kind==='video') bytes += r.bytesReceived||0; if(r.type==='candidate-pair' && r.currentRoundTripTime!=null) rtt = r.currentRoundTripTime*1000; }); let bitrate=0; if(bytesPrev) bitrate = ((bytes-bytesPrev)*8)/1.5; bytesPrev = bytes; let strength='Weak'; bars.querySelectorAll('i').forEach(i=>i.style.background='#2f3948'); if(bitrate>2000 || rtt<100){ strength='Strong'; bars.querySelectorAll('i').forEach((i,idx)=>i.style.background=idx===0?'#2fe08f':'#2fe08f'); } else if(bitrate>500 || rtt<250){ strength='Medium'; bars.querySelectorAll('i').forEach(i=>i.style.background='#f2cf3f'); } else { strength='Weak'; bars.querySelectorAll('i').forEach(i=>i.style.background='#f27b7b'); } strengthText.textContent=strength; }catch(e){}}
-
-      function startDuration(){ if(!startTime) startTime = Date.now(); (function tick(){ if(!startTime) return; callDuration.textContent = Math.floor((Date.now()-startTime)/1000/60) + ':' + String(Math.floor((Date.now()-startTime)/1000)%60).padStart(2,'0'); requestAnimationFrame(tick); })(); }
-
-      function endCall(reason='Ended'){ // push to chat history in messages area
-        const duration = startTime?callDuration.textContent:'00:00';
-        const rec = { kind: 'Call', timestamp: new Date().toLocaleString(), duration, strength: strengthText.textContent||'Unknown', reason };
-        try{ const key = 'galaxytalk_history'; const raw = localStorage.getItem(key); const arr = raw?JSON.parse(raw):[]; arr.unshift(rec); localStorage.setItem(key, JSON.stringify(arr.slice(0,50))); // render into messages area
-          const container = document.getElementById('messages'); const el = document.createElement('div'); el.className='msg'; el.innerHTML = `<div style="font-weight:700">${rec.kind} • <span style='font-weight:400;font-size:12px;color:#98a0b3'>${rec.timestamp}</span></div><div style='font-size:13px;color:#b9bbbe'>Duration: ${rec.duration} • Strength: ${rec.strength} • ${rec.reason}</div>`; container.prepend(el);
-        }catch(e){}
-        if(statsTimer){ clearInterval(statsTimer); statsTimer=null; }
-        if(pc){ try{ pc.close(); }catch(e){} pc=null; }
-        if(localStream){ localStream.getTracks().forEach(t=>t.stop()); localStream=null; }
-        remoteVid.srcObject = null; localVid.srcObject = null; hideCallWindow(); startTime=null; callDuration.textContent='00:00'; callTitle.textContent='No active call';
-      }
-
-      // UI bindings
-      document.getElementById('callEnd').addEventListener('click', ()=>endCall('User ended'));
-      document.getElementById('callFullscreen').addEventListener('click', ()=>{ callWindow.classList.toggle('fullscreen'); if(callWindow.classList.contains('fullscreen')){ callWindow.style.left='0'; callWindow.style.top='0'; callWindow.style.right='0'; callWindow.style.width='100%'; callWindow.style.height='100%'; } else { callWindow.style.right='22px'; callWindow.style.top='80px'; callWindow.style.width='360px'; callWindow.style.height='220px'; } });
-      document.getElementById('callMute').addEventListener('click', ()=>{ muted=!muted; if(localStream) localStream.getAudioTracks().forEach(t=>t.enabled=!muted); callMute.textContent = muted? 'Unmute' : 'Mute'; });
-      document.getElementById('callVideo').addEventListener('click', async ()=>{ videoOn=!videoOn; if(localStream) localStream.getVideoTracks().forEach(t=>t.enabled=videoOn); callVideo.textContent = videoOn? 'Video' : 'No Video'; if(!localStream) await ensureLocal(); });
-
-      // Initiation helper: add quick Start Call button to the interface (sidebar header)
-      const startBtn = document.createElement('button'); startBtn.textContent='Start Call'; startBtn.style.marginTop='8px'; startBtn.style.padding='8px'; startBtn.style.borderRadius='8px'; startBtn.style.border='none'; startBtn.style.background='linear-gradient(135deg,#5865f2,#7c3aed)'; startBtn.style.color='white'; startBtn.onclick = ()=> startOffer();
-      const sh = document.getElementById('sidebarHeader'); if(sh) sh.appendChild(startBtn);
-
-      // clean up on page unload
-      window.addEventListener('beforeunload', ()=>{ if(pc) try{ pc.close(); }catch(e){} });
-
-      // Expose for debugging
-      window.GalaxyCall = { startOffer, endCall };
+      function setText(el, text) { if (el) el.textContent = text || ''; }
+      function showCallWindow() { callWindow.classList.remove('hidden'); }
+      function hideCallWindow() { callWindow.classList.add('hidden'); }
+      function formatDuration(ms) { const seconds = Math.floor(ms / 1000); const minutes = Math.floor(seconds / 60); return `${minutes}:${String(seconds % 60).padStart(2, '0')}`; }
+      function generateRoomId() { return Math.random().toString(36).slice(2, 11); }
+      function getDisplayNameForCall(meta) { if (!meta) return 'No active call'; if (meta.type === 'direct') return `${meta.mode === 'video' ? 'Video' : 'Voice'} call with ${meta.target}`; return `${meta.mode === 'video' ? 'Video' : 'Voice'} room call`; }
+      function updateCallHeader(meta, roomId, status) { setText(callTitle, getDisplayNameForCall(meta)); setText(callTimestamp, new Date(meta.createdAt || Date.now()).toLocaleString()); setText(callStatus, status || (meta.status === 'connected' ? 'Connected' : 'Calling')); setText(callJoinCode, roomId ? `Join code: ${roomId}` : ''); }
+      function renderSavedCallHistory() { const raw = localStorage.getItem('galaxytalk_history'); const history = raw ? JSON.parse(raw) : []; document.querySelectorAll('.call-history-entry').forEach(entry => entry.remove()); history.slice(0, 20).reverse().forEach(rec => { const el = document.createElement('div'); el.className = 'msg call-history-entry'; el.innerHTML = `<div style="font-weight:700">${rec.kind} • <span style='font-weight:400;font-size:12px;color:#98a0b3'>${rec.timestamp}</span></div><div style='font-size:13px;color:#b9bbbe'>Duration: ${rec.duration} • Strength: ${rec.strength} • ${rec.reason}</div>`; messages.prepend(el); }); }
+      function saveCallHistory(record) { const key = 'galaxytalk_history'; const raw = localStorage.getItem(key); const arr = raw ? JSON.parse(raw) : []; arr.unshift(record); localStorage.setItem(key, JSON.stringify(arr.slice(0, 50))); }
+      async function createLocalStream(useVideo) { if (localStream) { const videoTrack = localStream.getVideoTracks()[0]; if (useVideo && !videoTrack) { const extra = await navigator.mediaDevices.getUserMedia({video: true}); const track = extra.getVideoTracks()[0]; localStream.addTrack(track); } if (videoTrack) videoTrack.enabled = useVideo; localVid.srcObject = localStream; return; } try { localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: useVideo}); localVid.srcObject = localStream; } catch (err) { alert('Could not access microphone/camera: ' + err.message); throw err; } }
+      function stopLocalStream() { if (!localStream) return; localStream.getTracks().forEach(track => track.stop()); localStream = null; }
+      function stopScreenTrack() { if (screenTrack) { screenTrack.stop(); screenTrack = null; } }
+      function setStrength(strength) { strengthText.textContent = strength; const colors = { Strong: '#2fe08f', Medium: '#f2cf3f', Weak: '#f27b7b' }; bars.querySelectorAll('span').forEach(span => span.style.background = colors[strength] || '#2f3948'); }
+      function updateDuration() { if (!startTime) return; callDuration.textContent = formatDuration(Date.now() - startTime); callTimer = requestAnimationFrame(updateDuration); }
+      async function updateStats() { if (!pc) return; try { const stats = await pc.getStats(); let bytes = 0; let rtt = 1000; stats.forEach(report => { if (report.type === 'inbound-rtp' && report.kind === 'video') { bytes += report.bytesReceived || 0; } if (report.type === 'candidate-pair' && report.currentRoundTripTime != null) { rtt = Math.min(rtt, report.currentRoundTripTime * 1000); } }); let bitrate = 0; if (bytesPrev && bytes > bytesPrev) { bitrate = ((bytes - bytesPrev) * 8) / 1.5; } bytesPrev = bytes; if (bitrate > 2000 || rtt < 100) { setStrength('Strong'); } else if (bitrate > 500 || rtt < 250) { setStrength('Medium'); } else { setStrength('Weak'); } } catch (err) {} }
+      function cleanupSignalListener() { if (roomSignalRef) { roomSignalRef.off('child_added'); roomSignalRef = null; } }
+      async function createPeerConnection() { if (pc) { try { pc.close(); } catch (err) {} } pc = new RTCPeerConnection({iceServers:[{urls:['stun:stun.l.google.com:19302']}]}); remoteStream = new MediaStream(); remoteVid.srcObject = remoteStream; pc.ontrack = event => { event.streams[0].getTracks().forEach(track => remoteStream.addTrack(track)); }; pc.onconnectionstatechange = () => { if (!pc) return; if (pc.connectionState === 'connected') { updateRoomStatus('connected'); if (!startTime) startTime = Date.now(); if (!callTimer) updateDuration(); } if (['disconnected','failed','closed'].includes(pc.connectionState)) { endCall('Disconnected'); } }; pc.onicecandidate = event => { if (event.candidate && roomSignalRef) roomSignalRef.push({from: me, type: 'candidate', payload: event.candidate, timestamp: Date.now()}); }; if (localStream) { localStream.getTracks().forEach(track => pc.addTrack(track, localStream)); } }
+      async function sendSignal(type, payload) { if (!roomSignalRef) return; await roomSignalRef.push({from: me, type, payload, timestamp: Date.now()}); }
+      async function handleSignal(signal) { if (!signal || signal.from === me) return; const payload = signal.payload; if (signal.type === 'offer') { if (!pc) { await createLocalStream(currentCallRoomMeta.mode === 'video'); await createPeerConnection(); } await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp)); const answer = await pc.createAnswer(); await pc.setLocalDescription(answer); await sendSignal('answer', {sdp: pc.localDescription}); } if (signal.type === 'answer') { if (pc) await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp)).catch(() => {}); } if (signal.type === 'candidate') { if (pc) await pc.addIceCandidate(payload).catch(() => {}); } }
+      function attachSignalListener(roomId) { cleanupSignalListener(); roomSignalRef = callSignalsRef.child(roomId); roomSignalRef.on('child_added', snapshot => { const signal = snapshot.val(); if (!signal) return; handleSignal(signal); }); }
+      async function watchIncomingCalls() { if (!me) return; userCallRoomsRef.child(me).on('child_added', async snapshot => { const roomId = snapshot.key; if (!roomId || incomingPrompted.has(roomId) || roomId === currentCallRoomId) return; incomingPrompted.add(roomId); const metaSnap = await callRoomsRef.child(roomId).once('value'); const meta = metaSnap.val(); if (!meta || meta.status !== 'calling') return; if (meta.creator === me) return; if (meta.type === 'direct' && meta.target !== me) return; if (confirm(`Incoming ${meta.mode} call from ${meta.creator}. Join?`)) { joinCallRoom(roomId); } }); }
+      function getCurrentTarget() { return window.currentChatPeer || null; }
+      async function saveCallRoomMeta(roomId, meta) { await callRoomsRef.child(roomId).set(meta); }
+      async function updateCallRoomStatus(status) { if (!currentCallRoomId) return; await callRoomsRef.child(currentCallRoomId).update({status}); }
+      async function createCallRoom(roomId, mode, type, targetUser) { if (!me) { alert('Please log in first.'); return; } if (currentCallRoomId && currentCallRoomId !== roomId) { if (!confirm('Leave current call and start a new one?')) return; await endCall('Switched call'); } currentCallRoomId = roomId; currentCallRoomMeta = { id: roomId, creator: me, target: targetUser || null, mode, type, status: 'calling', createdAt: Date.now() }; await saveCallRoomMeta(roomId, currentCallRoomMeta); await userCallRoomsRef.child(me).child(roomId).set(true); if (targetUser) { await userCallRoomsRef.child(targetUser).child(roomId).set(true); } attachSignalListener(roomId); await createLocalStream(mode === 'video'); await createPeerConnection(); updateCallHeader(currentCallRoomMeta, roomId, 'Calling'); showCallWindow(); const offer = await pc.createOffer(); await pc.setLocalDescription(offer); await sendSignal('offer', {sdp: pc.localDescription}); }
+      async function joinCallRoom(roomId) { if (!me) { alert('Please log in first.'); return; } const roomSnap = await callRoomsRef.child(roomId).once('value'); const meta = roomSnap.val(); if (!meta) { alert('Call room not found for code: ' + roomId); return; } if (meta.status === 'ended') { alert('This call room has ended.'); return; } if (currentCallRoomId && currentCallRoomId !== roomId) { if (!confirm('Leave current call and join the new room?')) return; await endCall('Switched call'); } currentCallRoomId = roomId; currentCallRoomMeta = meta; attachSignalListener(roomId); await userCallRoomsRef.child(me).child(roomId).set(true); await createLocalStream(meta.mode === 'video'); await createPeerConnection(); updateCallHeader(meta, roomId, 'Joining'); showCallWindow(); }
+      async function startDirectCall(mode) { const target = getCurrentTarget(); if (!target) { alert('Open a DM with someone to start a direct call.'); return; } const roomId = generateRoomId(); await createCallRoom(roomId, mode, 'direct', target); alert('Call created. Share this join code: ' + roomId); }
+      async function createJoinableRoom(mode) { const roomId = generateRoomId(); await createCallRoom(roomId, mode, 'group', null); alert('Joinable room created. Share this join code: ' + roomId); }
+      async function promptJoinCode() { const code = prompt('Enter join code to join a call or type CREATE to make a join room:'); if (!code) return; if (code.toUpperCase() === 'CREATE') { const mode = prompt('Create a room for voice or video? Type voice or video:', 'voice'); if (!mode) return; createJoinableRoom(mode.toLowerCase() === 'video' ? 'video' : 'voice'); return; } joinCallRoom(code.trim()); }
+      async function restoreLocalVideoTrack() { if (!pc || !localStream) return; const videoTrack = localStream.getVideoTracks()[0]; if (!videoTrack) return; const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video'); if (sender) sender.replaceTrack(videoTrack); localVid.srcObject = localStream; }
+      async function shareScreen() { if (!pc) { alert('Join a call first.'); return; } try { const screenStream = await navigator.mediaDevices.getDisplayMedia({video: true}); screenTrack = screenStream.getVideoTracks()[0]; const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video'); if (sender) { sender.replaceTrack(screenTrack); } else { pc.addTrack(screenTrack, screenStream); } localVid.srcObject = screenStream; screenTrack.onended = restoreLocalVideoTrack; } catch (err) { alert('Screen share failed: ' + err.message); } }
+      async function endCall(reason = 'Ended') { if (currentCallRoomId) { await updateCallRoomStatus('ended'); userCallRoomsRef.child(me).child(currentCallRoomId).remove().catch(() => {}); } if (roomSignalRef) { roomSignalRef.off(); roomSignalRef = null; } if (pc) { try { pc.close(); } catch (err) {} pc = null; } stopLocalStream(); stopScreenTrack(); if (remoteStream) { remoteStream.getTracks().forEach(track => track.stop()); remoteStream = null; } if (callTimer) { cancelAnimationFrame(callTimer); callTimer = null; } const duration = startTime ? formatDuration(Date.now() - startTime) : '00:00'; saveCallHistory({kind: 'Call', timestamp: new Date().toLocaleString(), duration, strength: strengthText.textContent || 'Unknown', reason}); renderSavedCallHistory(); hideCallWindow(); startTime = null; setText(callDuration, '00:00'); setText(callTitle, 'No active call'); setText(callStatus, 'Ready'); setText(callJoinCode, ''); currentCallRoomId = null; currentCallRoomMeta = null; }
+      function updateRoomStatus(status) { if (currentCallRoomMeta) { currentCallRoomMeta.status = status; updateCallHeader(currentCallRoomMeta, currentCallRoomId, status); } }
+      voiceCallBtn.addEventListener('click', () => startDirectCall('voice'));
+      videoCallBtn.addEventListener('click', () => startDirectCall('video'));
+      joinCodeBtn.addEventListener('click', promptJoinCode);
+      callEnd.addEventListener('click', () => endCall('User ended'));
+      callFullscreen.addEventListener('click', () => callWindow.classList.toggle('fullscreen'));
+      callMute.addEventListener('click', () => { muted = !muted; if (localStream) localStream.getAudioTracks().forEach(track => track.enabled = !muted); callMute.textContent = muted ? 'Unmute' : 'Mute'; });
+      callVideo.addEventListener('click', () => { videoOn = !videoOn; if (localStream) localStream.getVideoTracks().forEach(track => track.enabled = videoOn); callVideo.textContent = videoOn ? 'Video' : 'No Video'; });
+      shareScreenBtn.addEventListener('click', shareScreen);
+      function initCallSystem() { if (!me) return; callActionPanel.classList.remove('hidden'); watchIncomingCalls(); renderSavedCallHistory(); }
+      window.initCallSystem = initCallSystem;
+      window.renderSavedCallHistory = renderSavedCallHistory;
     })();
   </script>
 
