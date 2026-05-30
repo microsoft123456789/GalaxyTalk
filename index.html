@@ -479,6 +479,13 @@
       align-items: center;
       justify-content: space-between;
     }
+    #callWindow .call-header {
+      cursor: grab;
+      user-select: none;
+    }
+    #callWindow.dragging .call-header {
+      cursor: grabbing;
+    }
 
     #callWindow .call-body {
       display: flex;
@@ -1573,6 +1580,7 @@
     <div class="call-body">
       <video id="callRemote" autoplay playsinline></video>
       <video id="callLocal" autoplay playsinline muted class="preview"></video>
+      <audio id="callLocalAudio" autoplay style="display:none;"></audio>
     </div>
     <div class="call-footer">
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
@@ -1595,8 +1603,10 @@
       const videoCallBtn = document.getElementById('videoCallBtn');
       const joinCodeBtn = document.getElementById('joinCodeBtn');
       const callWindow = document.getElementById('callWindow');
+      const callHeader = callWindow.querySelector('.call-header');
       const remoteVid = document.getElementById('callRemote');
       const localVid = document.getElementById('callLocal');
+      const localAudio = document.getElementById('callLocalAudio');
       const callTitle = document.getElementById('callTitle');
       const callTimestamp = document.getElementById('callTimestamp');
       const callStatus = document.getElementById('callStatus');
@@ -1627,6 +1637,8 @@
       let bytesPrev = 0;
       let muted = false;
       let videoOn = true;
+      let isDragging = false;
+      let dragOffset = { x: 0, y: 0 };
       const incomingPrompted = new Set();
 
       function setText(el, text) { if (el) el.textContent = text || ''; }
