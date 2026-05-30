@@ -20,7 +20,13 @@
     }
 
     .hidden {
-      display: none
+      display: none !important;
+    }
+
+    #callActionPanel.hidden,
+    #callWindow.hidden,
+    #joinOverlay.hidden {
+      display: none !important;
     }
 
     canvas {
@@ -429,7 +435,6 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
       z-index: 105;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
       resize: both;
@@ -438,6 +443,13 @@
       min-height: 140px;
       max-width: calc(100% - 40px);
       max-height: calc(100% - 40px);
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    #callWindow::-webkit-scrollbar {
+      width: 0;
+      height: 0;
     }
 
     #callWindow.fullscreen {
@@ -763,7 +775,7 @@
   <canvas id="space"></canvas>
 
   <button id="settingsBtn" class="hidden" onclick="toggleSettings()"><i class="fa-solid fa-cog" aria-hidden="true"></i></button>
-  <div id="callActionPanel" class="hidden" style="display:none">
+  <div id="callActionPanel" class="hidden" style="display:none !important;">
     <button id="voiceCallBtn" class="call-action-btn" title="Voice"><i class="fa-solid fa-phone" aria-hidden="true"></i></button>
     <button id="videoCallBtn" class="call-action-btn" title="Video"><i class="fa-solid fa-video" aria-hidden="true"></i></button>
     <button id="joinCodeBtn" class="call-action-btn" title="Join"><i class="fa-solid fa-key" aria-hidden="true"></i></button>
@@ -884,7 +896,7 @@
   </div>
 
   <!-- Join Code Overlay (styled like site password) -->
-  <div id="joinOverlay" class="center hidden">
+  <div id="joinOverlay" class="center hidden" style="display:none !important;">
     <div class="card">
       <h2>Join Call</h2>
       <input id="joinCodeInput" placeholder="Enter Join Code or type CREATE">
@@ -977,6 +989,12 @@
         sa.style.display = "none"; // Backup
         l.classList.remove("hidden");
         l.style.display = ""; // Backup
+        const joinOverlay = document.getElementById('joinOverlay');
+        const callWindow = document.getElementById('callWindow');
+        const callActionPanel = document.getElementById('callActionPanel');
+        if (joinOverlay) { joinOverlay.classList.add('hidden'); joinOverlay.style.display = 'none'; }
+        if (callWindow) { callWindow.classList.add('hidden'); callWindow.style.display = 'none'; }
+        if (callActionPanel) { callActionPanel.classList.add('hidden'); callActionPanel.style.display = 'none'; }
       } else {
         se.textContent = "Wrong password";
       }
@@ -1033,6 +1051,12 @@
         const ap = document.getElementById("adminPanel");
         if (ap) ap.classList.remove("hidden");
       }
+      const joinOverlay = document.getElementById('joinOverlay');
+      const callWindow = document.getElementById('callWindow');
+      const callActionPanel = document.getElementById('callActionPanel');
+      if (joinOverlay) { joinOverlay.classList.add('hidden'); joinOverlay.style.display = 'none'; }
+      if (callWindow) { callWindow.classList.add('hidden'); callWindow.style.display = 'none'; }
+      if (callActionPanel) { callActionPanel.classList.add('hidden'); callActionPanel.style.display = 'none'; }
 
       db.ref("presence/" + me).set(true).catch(() => {
         // Show Firebase warning banner
@@ -1533,7 +1557,7 @@
     drawStars();
   </script>
 
-  <div id="callWindow" class="hidden">
+  <div id="callWindow" class="hidden" style="display:none !important;">
     <div class="call-header">
       <div>
         <strong id="callTitle">No active call</strong>
@@ -1606,8 +1630,8 @@
       const incomingPrompted = new Set();
 
       function setText(el, text) { if (el) el.textContent = text || ''; }
-      function showCallWindow() { callWindow.classList.remove('hidden'); }
-      function hideCallWindow() { callWindow.classList.add('hidden'); }
+      function showCallWindow() { callWindow.classList.remove('hidden'); callWindow.style.display = 'flex'; }
+      function hideCallWindow() { callWindow.classList.add('hidden'); callWindow.style.display = 'none'; }
       function formatDuration(ms) { const seconds = Math.floor(ms / 1000); const minutes = Math.floor(seconds / 60); return `${minutes}:${String(seconds % 60).padStart(2, '0')}`; }
       function generateRoomId() { return Math.random().toString(36).slice(2, 11); }
       function getDisplayNameForCall(meta) { if (!meta) return 'No active call'; if (meta.type === 'direct') return `${meta.mode === 'video' ? 'Video' : 'Voice'} call with ${meta.target}`; return `${meta.mode === 'video' ? 'Video' : 'Voice'} room call`; }
@@ -1699,8 +1723,18 @@
       async function startDirectCall(mode) { const target = getCurrentTarget(); if (!target) { alert('Open a DM with someone to start a direct call.'); return; } const roomId = generateRoomId(); await createCallRoom(roomId, mode, 'direct', target); alert('Call created. Share this join code: ' + roomId); }
       async function createJoinableRoom(mode) { const roomId = generateRoomId(); await createCallRoom(roomId, mode, 'group', null); alert('Joinable room created. Share this join code: ' + roomId); }
       async function promptJoinCode() { if (!me) { alert('Please log in first to join calls.'); return; } showJoinOverlay(); }
-      function showJoinOverlay() { document.getElementById('joinOverlay').classList.remove('hidden'); }
-      function closeJoinOverlay() { document.getElementById('joinOverlay').classList.add('hidden'); document.getElementById('joinErr').textContent = ''; document.getElementById('joinCodeInput').value = ''; }
+      function showJoinOverlay() {
+        const overlay = document.getElementById('joinOverlay');
+        overlay.classList.remove('hidden');
+        overlay.style.display = 'flex';
+      }
+      function closeJoinOverlay() {
+        const overlay = document.getElementById('joinOverlay');
+        overlay.classList.add('hidden');
+        overlay.style.display = 'none';
+        document.getElementById('joinErr').textContent = '';
+        document.getElementById('joinCodeInput').value = '';
+      }
       async function submitJoinCode() {
         const val = document.getElementById('joinCodeInput').value.trim();
         if (!val) {
