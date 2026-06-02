@@ -78,6 +78,367 @@
       height: 18px
     }
 
+    #toastContainer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 2200;
+      align-items: flex-end;
+      max-width: min(360px, calc(100% - 40px));
+      pointer-events: none;
+    }
+
+    .toast {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      width: 100%;
+      min-width: 280px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(17, 24, 39, 0.96);
+      pointer-events: auto;
+      animation: slideIn 0.28s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .toast.success {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.92), rgba(16, 185, 129, 0.92));
+      border-color: rgba(34, 197, 94, 0.28);
+    }
+
+    .toast.error {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.95), rgba(220, 38, 38, 0.95));
+      border-color: rgba(248, 113, 113, 0.28);
+    }
+
+    .toast-icon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .toast-content {
+      flex: 1;
+      text-align: left;
+    }
+
+    .toast-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .toast-text {
+      margin: 4px 0 0;
+      font-size: 13px;
+      line-height: 1.4;
+      opacity: 0.95;
+    }
+
+    .toast-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      padding: 0;
+      line-height: 1;
+      background: rgba(255, 255, 255, 0.16);
+      color: white;
+      border-radius: 999px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .toast-close:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.24);
+    }
+
+    .ringtone-clip-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 16px;
+      margin-top: 8px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .ringtone-clip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: #d6bcfa;
+      font-size: 12px;
+    }
+
+    .ringtone-clip-track {
+      position: relative;
+      height: 48px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      touch-action: none;
+      cursor: pointer;
+    }
+
+    .ringtone-clip-range {
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      left: 0;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #8b5cf6, #a855f7);
+      pointer-events: none;
+    }
+
+    .ringtone-clip-playhead {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      border-radius: 999px;
+      background: rgba(96, 165, 250, 0.9);
+      transform: translateX(-50%);
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .ringtone-clip-handle {
+      position: absolute;
+      top: 6px;
+      width: 16px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f8fafc;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+      transform: translateX(-50%);
+      cursor: ew-resize;
+    }
+
+    .ringtone-clip-handle:hover {
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.18);
+    }
+
+    .ringtone-clip-labels {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      font-size: 11px;
+      color: #a5b4fc;
+      pointer-events: none;
+    }
+
+    .ringtone-clip-inputs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ringtone-clip-inputs label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #e5e7eb;
+    }
+
+    .ringtone-clip-inputs input {
+      width: 80px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(0, 0, 0, 0.4);
+      color: white;
+    }
+
+    .ringtone-clip-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .ringtone-clip-actions button {
+      width: auto;
+      min-width: 96px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #7c3aed, #c084fc);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .ringtone-clip-actions button.secondary {
+      background: #6b7280;
+    }
+
+    .admin-user-table {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .admin-panel-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .admin-panel-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .admin-panel-card h5 {
+      margin: 0;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #c4b5fd;
+    }
+
+    .admin-panel-card strong {
+      font-size: 28px;
+      display: block;
+      margin-top: 10px;
+      color: white;
+    }
+
+    .admin-user-row {
+      display: grid;
+      grid-template-columns: 100px minmax(160px, 1fr) 140px 240px;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      align-items: start;
+    }
+
+    .admin-user-header {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a5b4fc;
+      background: rgba(255,255,255,0.03);
+      padding: 10px 12px;
+    }
+
+    .admin-user-row.admin-user-header {
+      background: rgba(255,255,255,0.03);
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .admin-user-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .admin-user-pfp {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .admin-user-pfp img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .admin-user-cell button {
+      width: 100%;
+      margin-top: 0;
+      padding: 8px 12px;
+      font-size: 12px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #7c3aed, #c084fc);
+      color: white;
+      cursor: pointer;
+    }
+
+    .admin-user-cell button.secondary {
+      background: #6b7280;
+    }
+
+    .admin-ban-duration {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(50px, 1fr));
+      gap: 6px;
+    }
+
+    .admin-ban-duration input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.42);
+      color: white;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .admin-ban-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .admin-ban-actions button {
+      flex: 1;
+      min-width: 100px;
+    }
+
+    .admin-ban-status {
+      color: #c7d2fe;
+      font-size: 12px;
+    }
+
     #app {
       display: flex;
       height: 100vh
@@ -562,17 +923,29 @@
     #callWindow .strength-bar span:nth-child(2) { height: 8px; }
     #callWindow .strength-bar span:nth-child(3) { height: 12px; }
 
+    #settingsPopup {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: flex;
+      background: rgba(8, 10, 25, 0.96);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+    }
+
     #settingsPopup.hidden {
       display: none;
     }
 
     .settings-sidebar {
-      width: 240px;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 60px 20px 20px;
+      width: 280px;
+      min-width: 280px;
+      background: rgba(15, 7, 34, 0.95);
+      border-right: 1px solid rgba(255,255,255,0.08);
+      padding: 60px 18px 20px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 8px;
     }
 
     .settings-sidebar h4 {
@@ -602,6 +975,7 @@
 
     .settings-content {
       flex: 1;
+      height: 100%;
       padding: 60px 40px;
       overflow-y: auto;
       position: relative;
@@ -850,6 +1224,43 @@
         
         <div class="settings-item">
           <div style="flex: 1;">
+            <div class="settings-item-label">Ringtone</div>
+            <div class="settings-item-value" id="ringtoneName">No ringtone uploaded</div>
+            <audio id="ringtonePreview" controls style="width:100%;margin-top:8px;display:none;"></audio>
+            <audio id="ringtonePlayer" autoplay loop style="display:none;"></audio>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+            <input type="file" id="ringtoneInput" hidden accept="audio/*" onchange="uploadRingtone(this)">
+            <button style="width:auto;margin-top:0;padding:6px 15px;font-size:12px;" onclick="document.getElementById('ringtoneInput').click()">Upload</button>
+            <button id="removeRingtoneBtn" style="width:auto;margin-top:0;padding:6px 15px;font-size:12px;background:#6b7280;" onclick="removeRingtone()">Remove</button>
+            <button id="openClipBtn" style="width:auto;margin-top:8px;padding:6px 15px;font-size:12px;background:#6b7280;" onclick="showClipUI()">Clip</button>
+          </div>
+        </div>
+        <div id="ringtoneClipUI" class="ringtone-clip-panel" style="display:none;">
+          <div class="ringtone-clip-header">
+            <span>Trim ringtone</span>
+            <span><span id="clipStartLabel">0.0s</span> — <span id="clipEndLabel">0.0s</span></span>
+          </div>
+          <div id="clipTrack" class="ringtone-clip-track">
+            <div id="clipPlayHead" class="ringtone-clip-playhead"></div>
+            <div id="clipRange" class="ringtone-clip-range"></div>
+            <div id="clipHandleLeft" class="ringtone-clip-handle"></div>
+            <div id="clipHandleRight" class="ringtone-clip-handle"></div>
+            <div class="ringtone-clip-labels"><span>0s</span><span id="clipMaxLabel">0s</span></div>
+          </div>
+          <div class="ringtone-clip-inputs">
+            <label>Start <input id="clipStart" type="number" min="0" value="0" step="0.1"></label>
+            <label>End <input id="clipEnd" type="number" min="0" value="5" step="0.1"></label>
+          </div>
+          <div class="ringtone-clip-actions">
+            <button id="clipPreviewBtn" onclick="toggleClipPreview()" title="Preview"><i class="fa-solid fa-play"></i></button>
+            <button onclick="applyClip()">Apply Clip</button>
+            <button class="secondary" onclick="hideClipUI()">Close</button>
+          </div>
+        </div>
+        
+        <div class="settings-item">
+          <div style="flex: 1;">
             <div class="settings-item-label">Display Name</div>
             <div class="settings-item-value" id="valDisplayName">Username</div>
           </div>
@@ -888,11 +1299,42 @@
         <p style="color: #b9bbbe;">Manage your public appearance across the galaxy.</p>
         
         <div id="adminPanel" class="hidden">
-          <h4 style="margin: 20px 0 10px; font-size: 12px; text-transform: uppercase; color: #8e9297; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">Admin: Send System Message</h4>
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <textarea id="systemMsgText" placeholder="Type a system message..." style="width: 100%; background: #0e0018; color: white; border: 1px solid #5b2b82; border-radius: 8px; padding: 10px; min-height: 80px;"></textarea>
-            <button style="width: auto; align-self: flex-end;" onclick="sendSystemMsg()">Broadcast to Global</button>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+            <div>
+              <div style="font-size: 18px; font-weight: 700; color: white;">Admin Dashboard</div>
+              <div style="color:#b9bbbe;font-size:13px; max-width: 520px;">Audit user accounts, manage display names, update PINs, and apply timed bans from a single control panel.</div>
+            </div>
+            <button style="width:auto;padding:8px 18px;font-size:13px;background:#6b7280;border-radius:999px;" onclick="renderAdminUsers()">Refresh Users</button>
           </div>
+
+          <div class="admin-panel-cards">
+            <div class="admin-panel-card">
+              <h5>Total Users</h5>
+              <strong id="adminTotalUsers">0</strong>
+            </div>
+            <div class="admin-panel-card">
+              <h5>Active Bans</h5>
+              <strong id="adminActiveBans">0</strong>
+            </div>
+            <div class="admin-panel-card">
+              <h5>Pending Actions</h5>
+              <strong id="adminPendingActions">0</strong>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 20px;">
+            <input id="newUserName" placeholder="New username" style="flex:1 1 220px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.35); color:white;" />
+            <input id="newUserPin" placeholder="4-digit PIN" maxlength="4" style="flex:0 0 150px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.35); color:white;" />
+            <button style="width:auto;padding:10px 18px;border-radius:999px;" onclick="addUser()">Add User</button>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+            <textarea id="systemMsgText" placeholder="Type a system message..." style="width: 100%; background: #0e0018; color: white; border: 1px solid #5b2b82; border-radius: 8px; padding: 12px; min-height: 100px;"></textarea>
+            <button style="width: auto; align-self: flex-end; padding: 10px 18px; border-radius: 999px;" onclick="sendSystemMsg()">Broadcast to Global</button>
+          </div>
+
+          <div id="adminUserTable" class="admin-user-table"></div>
+          <input type="file" id="adminPfpFile" hidden accept="image/*" onchange="processAdminPfp(this)">
         </div>
       </div>
 
@@ -948,6 +1390,8 @@
       <button onclick="login()">Login</button>
     </div>
   </div>
+
+  <div id="toastContainer"></div>
 
   <!-- DM Picker Modal -->
   <div id="dmPickerOverlay" class="hidden">
@@ -1035,29 +1479,68 @@
     }
 
     // Simplified login to bypass Firebase PERMISSION_DENIED until Auth is enabled
-    function login() {
+    async function login() {
       const un = document.getElementById("username");
       const pn = document.getElementById("pin");
       const le = document.getElementById("loginErr");
       const l = document.getElementById("login");
       const a = document.getElementById("app");
       
-      const username = un.value.trim();
-      console.log("Login attempt for:", username);
-      if (!USERS[username]) {
-        le.textContent = "Invalid login";
+      le.textContent = "";
+      const rawUsername = un.value.trim();
+      const username = rawUsername;
+      if (!username) {
+        showToast('Invalid login', 'Enter your username.', 'error');
         return;
       }
+      let matchedUser = Object.keys(USERS).find(u => u.toLowerCase() === username.toLowerCase());
+      if (!matchedUser) {
+        try {
+          const dbSnap = await db.ref('users').once('value');
+          const dbUsers = dbSnap.exists() ? Object.keys(dbSnap.val() || {}) : [];
+          matchedUser = dbUsers.find(u => u.toLowerCase() === username.toLowerCase());
+        } catch (err) {
+          console.warn('User lookup failed:', err);
+        }
+      }
+      if (!matchedUser) {
+        showToast('Login Error', 'Username not found or PIN incorrect.', 'error', false);
+        return;
+      }
+      console.log("Login attempt for:", matchedUser);
 
-      // Check PIN against hardcoded USERS list first to allow entry
-      const correctPin = USERS[username];
+      // Check PIN override from Firebase when available
+      let correctPin = USERS[matchedUser];
+      try {
+        const pinSnap = await db.ref("users/" + matchedUser + "/pin").once("value");
+        if (pinSnap.exists()) correctPin = pinSnap.val();
+      } catch (err) {
+        console.warn('Could not load user pin override:', err);
+      }
+
       if (correctPin !== pn.value.trim()) {
-        le.textContent = "Invalid login";
+        showToast('Wrong PIN', 'Invalid username or PIN.', 'error', false);
         return;
       }
 
-      console.log("Login success for:", username);
-      me = username;
+      try {
+        const banSnap = await db.ref("bans/" + matchedUser).once("value");
+        if (banSnap.exists()) {
+          const banData = banSnap.val();
+          const until = Number(banData.until || 0);
+          if (until > Date.now()) {
+            showToast('Banned', `You are banned for ${formatTimeLeft(until - Date.now())}.`, 'error', false);
+            return;
+          }
+          await db.ref("bans/" + matchedUser).remove();
+        }
+      } catch (err) {
+        console.warn('Ban check failed:', err);
+      }
+
+      showToast('Welcome back', 'Login successful.', 'success');
+      console.log("Login success for:", matchedUser);
+      me = matchedUser;
       l.classList.add("hidden");
       l.style.display = "none";
       a.classList.remove("hidden");
@@ -1081,6 +1564,31 @@
         if (vdn) vdn.textContent = disp;
       });
 
+      // load ringtone if present
+      try {
+        db.ref("users/" + me + "/ringtone").on("value", s => {
+          const val = s.val();
+          const el = document.getElementById('ringtonePreview');
+          const nameEl = document.getElementById('ringtoneName');
+          if (val && val.data) {
+            if (el) { el.src = val.data; el.style.display = 'block'; }
+            if (nameEl) nameEl.textContent = val.name || 'Custom ringtone';
+          } else {
+            // try local fallback
+            try {
+              const local = JSON.parse(localStorage.getItem('ringtone_local'));
+              if (local && local.data) {
+                if (el) { el.src = local.data; el.style.display = 'block'; }
+                if (nameEl) nameEl.textContent = local.name || 'Custom ringtone';
+              } else {
+                if (el) el.style.display = 'none';
+                if (nameEl) nameEl.textContent = 'No ringtone uploaded';
+              }
+            } catch (e) { if (el) el.style.display = 'none'; if (nameEl) nameEl.textContent = 'No ringtone uploaded'; }
+          }
+        });
+      } catch(e) {}
+
       if (me === "Elnathan") {
         const ap = document.getElementById("adminPanel");
         if (ap) ap.classList.remove("hidden");
@@ -1103,8 +1611,274 @@
       db.ref("presence/" + me).onDisconnect().remove();
 
       loadUsers();
+      if (me === "Elnathan") {
+        renderAdminUsers();
+      }
       openChat("global");
       initCallSystem();
+    }
+
+    function formatTimeLeft(ms) {
+      const seconds = Math.max(0, Math.floor(ms / 1000));
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+      return `${days}d ${hours}h ${minutes}m ${secs}s`;
+    }
+
+    function showToast(title, message, type = 'info', autoHide = (type === 'success'), duration = 3600) {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = `toast ${type === 'success' ? 'success' : type === 'error' ? 'error' : ''}`;
+      const icon = document.createElement('div');
+      icon.className = 'toast-icon';
+      icon.textContent = type === 'success' ? '✓' : type === 'error' ? '✖' : 'ℹ';
+      const content = document.createElement('div');
+      content.className = 'toast-content';
+      const titleEl = document.createElement('div');
+      titleEl.className = 'toast-title';
+      titleEl.textContent = title;
+      const textEl = document.createElement('div');
+      textEl.className = 'toast-text';
+      textEl.textContent = message;
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'toast-close';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.onclick = () => toast.remove();
+      content.appendChild(titleEl);
+      content.appendChild(textEl);
+      toast.appendChild(icon);
+      toast.appendChild(content);
+      toast.appendChild(closeBtn);
+      container.appendChild(toast);
+      if (autoHide) {
+        setTimeout(() => {
+          toast.remove();
+        }, duration);
+      }
+    }
+
+    function adminSafeId(username) {
+      return username.replace(/[^a-zA-Z0-9_-]/g, '_');
+    }
+
+    async function renderAdminUsers() {
+      const table = document.getElementById('adminUserTable');
+      if (!table) return;
+      table.innerHTML = '';
+      const header = document.createElement('div');
+      header.className = 'admin-user-row admin-user-header';
+      header.innerHTML = `
+        <div>Profile</div>
+        <div>Login / Display Name</div>
+        <div>PIN</div>
+        <div>Bans</div>
+      `;
+      table.appendChild(header);
+
+      const userSnap = await db.ref('users').once('value').catch(() => ({ val: () => null, exists: () => false }));
+      const dbUsers = userSnap.exists() ? Object.keys(userSnap.val() || {}) : [];
+      const users = Array.from(new Set([...Object.keys(USERS), ...dbUsers])).sort((a,b)=>a.localeCompare(b, undefined, {sensitivity:'base'}));
+      await Promise.all(users.map(async user => {
+        const safe = adminSafeId(user);
+        const displaySnap = await db.ref('users/' + user + '/displayName').once('value').catch(() => ({ val: () => null }));
+        const bannedSnap = await db.ref('bans/' + user).once('value').catch(() => ({ val: () => null, exists: () => false }));
+        const pfpSnap = await db.ref('users/' + user + '/pfp').once('value').catch(() => ({ val: () => null }));
+        const pinSnap = await db.ref('users/' + user + '/pin').once('value').catch(() => ({ val: () => null, exists: () => false }));
+        const displayName = displaySnap.val() || user;
+        const pfp = pfpSnap.val() || 'https://www.gravatar.com/avatar/0?d=mp&f=y';
+        const pin = pinSnap.exists() ? pinSnap.val() : USERS[user];
+        let banText = 'Not banned';
+        if (bannedSnap.exists()) {
+          const banData = bannedSnap.val();
+          const until = Number(banData.until || 0);
+          if (until > Date.now()) {
+            banText = `Banned (${formatTimeLeft(until - Date.now())})`;
+          } else {
+            await db.ref('bans/' + user).remove();
+          }
+        }
+
+        const row = document.createElement('div');
+        row.className = 'admin-user-row';
+        row.innerHTML = `
+          <div class="admin-user-cell admin-user-pfp">
+            <img src="${pfp}" alt="${user}">
+            <button onclick="triggerAdminPfpUpload('${user}')">Change PFP</button>
+          </div>
+          <div class="admin-user-cell">
+            <div style="font-weight:700;">${user}</div>
+            <div style="color:#c7d2fe;font-size:13px;">${displayName}</div>
+            <button class="secondary" onclick="editUserDisplayName('${user}')">Edit Display Name</button>
+          </div>
+          <div class="admin-user-cell">
+            <div style="font-weight:700;letter-spacing:0.05em;">${pin}</div>
+            <button class="secondary" onclick="editUserPin('${user}')">Edit PIN</button>
+            <button class="secondary" onclick="deleteUser('${user}')" style="margin-top:8px;background:#ef4444;">Delete</button>
+          </div>
+          <div class="admin-user-cell">
+            <div class="admin-ban-status" id="adminBanStatus_${safe}">${banText}</div>
+            <div class="admin-ban-duration">
+              <input id="banDays_${safe}" type="number" min="0" max="30" placeholder="Days" value="0">
+              <input id="banHours_${safe}" type="number" min="0" max="23" placeholder="Hours" value="0">
+              <input id="banMins_${safe}" type="number" min="0" max="59" placeholder="Mins" value="0">
+              <input id="banSecs_${safe}" type="number" min="0" max="59" placeholder="Secs" value="0">
+            </div>
+            <div class="admin-ban-actions">
+              <button onclick="banUser('${user}')">Ban</button>
+              <button class="secondary" onclick="unbanUser('${user}')">Unban</button>
+            </div>
+          </div>
+        `;
+        table.appendChild(row);
+      }));
+      const totalUsers = users.length;
+      const activeBans = await Promise.all(users.map(async user => {
+        const banSnap = await db.ref('bans/' + user).once('value').catch(() => ({ exists: () => false }));
+        return banSnap.exists() ? 1 : 0;
+      }));
+      const banCount = activeBans.reduce((sum, value) => sum + value, 0);
+      document.getElementById('adminTotalUsers').textContent = totalUsers;
+      document.getElementById('adminActiveBans').textContent = banCount;
+      document.getElementById('adminPendingActions').textContent = banCount > 0 ? banCount : 0;
+    }
+
+    function addUser() {
+      const usernameInput = document.getElementById('newUserName');
+      const pinInput = document.getElementById('newUserPin');
+      if (!usernameInput || !pinInput) return;
+      const username = usernameInput.value.trim();
+      const pin = pinInput.value.trim();
+      if (!username) {
+        showToast('Add User Error', 'Enter a username.', 'error', false);
+        return;
+      }
+      if (!pin || pin.length !== 4 || isNaN(pin)) {
+        showToast('Add User Error', 'PIN must be 4 digits.', 'error', false);
+        return;
+      }
+      const normalized = username.trim();
+      if (Object.keys(USERS).some(u => u.toLowerCase() === normalized.toLowerCase())) {
+        showToast('Add User Error', 'A user with that name already exists.', 'error', false);
+        return;
+      }
+      const userPath = db.ref('users/' + normalized);
+      userPath.once('value').then(snapshot => {
+        if (snapshot.exists()) {
+          showToast('Add User Error', 'A user with that name already exists.', 'error', false);
+          return;
+        }
+        userPath.child('pin').set(pin).then(() => {
+          USERS[normalized] = pin;
+          usernameInput.value = '';
+          pinInput.value = '';
+          showToast('User Added', `${normalized} was added successfully.`, 'success');
+          renderAdminUsers();
+        }).catch(err => {
+          console.error('Add user failed', err);
+          showToast('Add User Error', 'Could not add user.', 'error', false);
+        });
+      }).catch(err => {
+        console.error('Add user failed', err);
+        showToast('Add User Error', 'Could not check existing user.', 'error', false);
+      });
+        console.error('Add user failed', err);
+        showToast('Add User Error', 'Could not add user.', 'error', false);
+      });
+    }
+
+    function deleteUser(user) {
+      if (!confirm(`Delete user ${user}? This will remove their login and ban record.`)) return;
+      delete USERS[user];
+      Promise.all([
+        db.ref('users/' + user).remove().catch(() => {}),
+        db.ref('bans/' + user).remove().catch(() => {})
+      ]).then(() => {
+        showToast('User Deleted', `${user} was removed.`, 'success');
+        renderAdminUsers();
+      }).catch(err => {
+        console.error('Delete user failed', err);
+        showToast('Delete User Error', 'Could not delete user.', 'error', false);
+      });
+    }
+
+    function triggerAdminPfpUpload(user) {
+      window.adminPfpTarget = user;
+      const input = document.getElementById('adminPfpFile');
+      if (input) input.click();
+    }
+
+    function processAdminPfp(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const target = window.adminPfpTarget;
+      input.value = '';
+      if (!target) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result;
+        db.ref('users/' + target + '/pfp').set(base64).then(() => {
+          renderAdminUsers();
+        }).catch(() => {
+          alert('Unable to update profile picture');
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function editUserDisplayName(user) {
+      let existing = user;
+      try {
+        const currentSnap = await db.ref('users/' + user + '/displayName').once('value');
+        if (currentSnap.exists()) existing = currentSnap.val();
+      } catch (e) {
+        console.warn('Could not load display name for', user, e);
+      }
+      const newName = prompt('Enter new display name for ' + user + ':', existing || user);
+      if (!newName) return;
+      db.ref('users/' + user + '/displayName').set(newName).then(() => {
+        renderAdminUsers();
+      });
+    }
+
+    function editUserPin(user) {
+      const newPin = prompt('Enter new 4-digit PIN for ' + user + ':', '');
+      if (!newPin || newPin.length !== 4 || isNaN(newPin)) {
+        alert('PIN must be 4 digits.');
+        return;
+      }
+      db.ref('users/' + user + '/pin').set(newPin).then(() => {
+        renderAdminUsers();
+      });
+    }
+
+    function banUser(user) {
+      const safe = adminSafeId(user);
+      const days = Number(document.getElementById('banDays_' + safe).value) || 0;
+      const hours = Number(document.getElementById('banHours_' + safe).value) || 0;
+      const mins = Number(document.getElementById('banMins_' + safe).value) || 0;
+      const secs = Number(document.getElementById('banSecs_' + safe).value) || 0;
+      const duration = ((days * 86400) + (hours * 3600) + (mins * 60) + secs) * 1000;
+      if (duration <= 0) {
+        alert('Enter a ban duration.');
+        return;
+      }
+      const until = Date.now() + duration;
+      db.ref('bans/' + user).set({ until, bannedBy: me, createdAt: Date.now() }).then(() => {
+        renderAdminUsers();
+      }).catch(() => {
+        alert('Unable to ban user.');
+      });
+    }
+
+    function unbanUser(user) {
+      db.ref('bans/' + user).remove().then(() => {
+        renderAdminUsers();
+      }).catch(() => {
+        alert('Unable to unban user.');
+      });
     }
 
     function getVisibleUsers() {
@@ -1459,6 +2233,500 @@
       reader.readAsDataURL(file);
     }
 
+    // Helper: convert AudioBuffer to WAV ArrayBuffer
+    function audioBufferToWav(buffer, opt) {
+      opt = opt || {}
+      var numChannels = buffer.numberOfChannels
+      var sampleRate = buffer.sampleRate
+      var format = opt.float32 ? 3 : 1
+      var bitDepth = format === 3 ? 32 : 16
+
+      var result;
+      if (numChannels === 2) {
+        result = interleave(buffer.getChannelData(0), buffer.getChannelData(1))
+      } else {
+        result = buffer.getChannelData(0)
+      }
+
+      return encodeWAV(result, numChannels, sampleRate, bitDepth, format)
+
+      function interleave(inputL, inputR) {
+        var length = inputL.length + inputR.length
+        var result = new Float32Array(length)
+        var index = 0
+        var inputIndex = 0
+
+        while (index < length) {
+          result[index++] = inputL[inputIndex]
+          result[index++] = inputR[inputIndex]
+          inputIndex++
+        }
+        return result
+      }
+
+      function encodeWAV(samples, numChannels, sampleRate, bitDepth, format) {
+        var bytesPerSample = bitDepth / 8
+        var blockAlign = numChannels * bytesPerSample
+        var buffer = new ArrayBuffer(44 + samples.length * bytesPerSample)
+        var view = new DataView(buffer)
+
+        /* RIFF identifier */
+        writeString(view, 0, 'RIFF')
+        /* file length */
+        view.setUint32(4, 36 + samples.length * bytesPerSample, true)
+        /* RIFF type */
+        writeString(view, 8, 'WAVE')
+        /* format chunk identifier */
+        writeString(view, 12, 'fmt ')
+        /* format chunk length */
+        view.setUint32(16, 16, true)
+        /* sample format (raw) */
+        view.setUint16(20, format, true)
+        /* channel count */
+        view.setUint16(22, numChannels, true)
+        /* sample rate */
+        view.setUint32(24, sampleRate, true)
+        /* byte rate (sampleRate * blockAlign) */
+        view.setUint32(28, sampleRate * blockAlign, true)
+        /* block align (channel count * bytesPerSample) */
+        view.setUint16(32, blockAlign, true)
+        /* bits per sample */
+        view.setUint16(34, bitDepth, true)
+        /* data chunk identifier */
+        writeString(view, 36, 'data')
+        /* data chunk length */
+        view.setUint32(40, samples.length * bytesPerSample, true)
+
+        if (format === 1) { // PCM16
+          floatTo16BitPCM(view, 44, samples)
+        } else {
+          writeFloat32(view, 44, samples)
+        }
+
+        return buffer
+      }
+
+      function floatTo16BitPCM(output, offset, input) {
+        for (var i = 0; i < input.length; i++, offset += 2) {
+          var s = Math.max(-1, Math.min(1, input[i]))
+          output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true)
+        }
+      }
+
+      function writeFloat32(output, offset, input) {
+        for (var i = 0; i < input.length; i++, offset += 4) {
+          output.setFloat32(offset, input[i], true)
+        }
+      }
+
+      function writeString(view, offset, string) {
+        for (var i = 0; i < string.length; i++) {
+          view.setUint8(offset + i, string.charCodeAt(i))
+        }
+      }
+    }
+
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    // Ringtone upload: validate audio contains sound before saving
+    async function uploadRingtone(input) {
+      if (!me) { alert('Please log in first.'); return; }
+      const file = input.files[0];
+      if (!file) return;
+      if (!file.type || !file.type.startsWith('audio')) {
+        alert('Please upload a valid audio file.');
+        return;
+      }
+
+      const arrayBuffer = await file.arrayBuffer();
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) { alert('AudioContext not supported in this browser.'); return; }
+      const ctx = new AudioCtx();
+      let audioBuffer;
+      try {
+        audioBuffer = await ctx.decodeAudioData(arrayBuffer.slice(0));
+        // compute peak amplitude
+        let peak = 0;
+        for (let c = 0; c < audioBuffer.numberOfChannels; c++) {
+          const data = audioBuffer.getChannelData(c);
+          for (let i = 0; i < data.length; i += 256) { // sample down for speed
+            peak = Math.max(peak, Math.abs(data[i]));
+            if (peak >= 0.02) break;
+          }
+          if (peak >= 0.02) break;
+        }
+        if (peak < 0.02) { alert('File appears to be silent or too quiet. Upload a ringtone with audible sound.'); try { ctx.close(); } catch(e) {} return; }
+      } catch (err) {
+        alert('Could not process audio file: ' + err.message);
+        try { ctx.close(); } catch(e) {}
+        return;
+      }
+
+      // Trim to max 20s by default
+      const maxDuration = 20;
+      let targetBuffer = audioBuffer;
+      if (audioBuffer.duration > maxDuration) {
+        const offline = new OfflineAudioContext(audioBuffer.numberOfChannels, Math.floor(maxDuration * audioBuffer.sampleRate), audioBuffer.sampleRate);
+        const src = offline.createBufferSource();
+        src.buffer = audioBuffer;
+        src.connect(offline.destination);
+        src.start(0, 0, maxDuration);
+        try {
+          targetBuffer = await offline.startRendering();
+        } catch (e) { targetBuffer = audioBuffer; }
+      }
+
+      // export targetBuffer to WAV and save as base64
+      try {
+        const wavArray = audioBufferToWav(targetBuffer);
+        const blob = new Blob([wavArray], { type: 'audio/wav' });
+        const base64 = await blobToBase64(blob);
+        // save
+        try {
+          await db.ref("users/" + me + "/ringtone").set({ data: base64, name: file.name.replace(/\.[^/.]+$/, '') + ".wav", type: 'audio/wav' });
+          const el = document.getElementById('ringtonePreview');
+          const nameEl = document.getElementById('ringtoneName');
+          if (el) { el.src = base64; el.style.display = 'block'; }
+          if (nameEl) nameEl.textContent = file.name.replace(/\.[^/.]+$/, '') + ".wav";
+          alert('Ringtone uploaded and trimmed to 20s.');
+        } catch (err) {
+          localStorage.setItem('ringtone_local', JSON.stringify({ data: base64, name: file.name.replace(/\.[^/.]+$/, '') + ".wav", type: 'audio/wav' }));
+          const el = document.getElementById('ringtonePreview');
+          const nameEl = document.getElementById('ringtoneName');
+          if (el) { el.src = base64; el.style.display = 'block'; }
+          if (nameEl) nameEl.textContent = file.name.replace(/\.[^/.]+$/, '') + ".wav";
+          alert('Ringtone saved locally (Firebase write failed).');
+        }
+      } catch (err) {
+        alert('Failed to export ringtone: ' + err.message);
+      }
+      try { ctx.close(); } catch(e) {}
+    }
+
+    let ringtoneClipDuration = 20;
+    let ringtoneClipDragging = null;
+    let ringtoneClipPreviewActive = false;
+    let ringtoneClipPreviewTimeout = null;
+    let ringtoneClipPlaying = false;
+
+    function showClipUI() {
+      const preview = document.getElementById('ringtonePreview');
+      const clipUI = document.getElementById('ringtoneClipUI');
+      if (!preview || !preview.src) { alert('No ringtone loaded to clip.'); return; }
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      const setDefaults = () => {
+        const duration = clamp(Math.min(20, isFinite(preview.duration) ? preview.duration : 20), 0.1, 20);
+        ringtoneClipDuration = duration;
+        const startEl = document.getElementById('clipStart');
+        const endEl = document.getElementById('clipEnd');
+        if (startEl) {
+          startEl.value = 0;
+          startEl.max = duration;
+        }
+        if (endEl) {
+          endEl.value = duration.toFixed(1);
+          endEl.max = duration;
+        }
+        updateClipUI();
+      };
+      if (isFinite(preview.duration) && preview.duration > 0) {
+        setDefaults();
+      } else {
+        preview.addEventListener('loadedmetadata', setDefaults, { once: true });
+      }
+      if (clipUI) {
+        if (!clipUI.dataset.clipInit) {
+          initClipHandles();
+          clipUI.dataset.clipInit = '1';
+        }
+        clipUI.style.display = 'flex';
+      }
+    }
+
+    function hideClipUI() {
+      ringtoneClipPreviewActive = false;
+      stopClipPreview();
+      const clipUI = document.getElementById('ringtoneClipUI');
+      if (clipUI) clipUI.style.display = 'none';
+    }
+
+    function updateClipUI() {
+      const startInput = document.getElementById('clipStart');
+      const endInput = document.getElementById('clipEnd');
+      const startLabel = document.getElementById('clipStartLabel');
+      const endLabel = document.getElementById('clipEndLabel');
+      const maxLabel = document.getElementById('clipMaxLabel');
+      const range = document.getElementById('clipRange');
+      const leftHandle = document.getElementById('clipHandleLeft');
+      const rightHandle = document.getElementById('clipHandleRight');
+      const duration = Math.max(0.1, Math.min(20, ringtoneClipDuration));
+      let start = Number(startInput.value) || 0;
+      let end = Number(endInput.value) || duration;
+      if (start < 0) start = 0;
+      if (end > duration) end = duration;
+      if (end <= start) end = Math.min(duration, start + 0.1);
+      startInput.value = start.toFixed(1);
+      endInput.value = end.toFixed(1);
+      startLabel.textContent = `${start.toFixed(1)}s`;
+      endLabel.textContent = `${end.toFixed(1)}s`;
+      maxLabel.textContent = `${duration.toFixed(0)}s`;
+      const leftPercent = (start / duration) * 100;
+      const rightPercent = (end / duration) * 100;
+      if (range) {
+        range.style.left = `${leftPercent}%`;
+        range.style.width = `${Math.max(2, rightPercent - leftPercent)}%`;
+      }
+      if (leftHandle) leftHandle.style.left = `${leftPercent}%`;
+      if (rightHandle) rightHandle.style.left = `${rightPercent}%`;
+    }
+
+    function initClipHandles() {
+      const track = document.getElementById('clipTrack');
+      const leftHandle = document.getElementById('clipHandleLeft');
+      const rightHandle = document.getElementById('clipHandleRight');
+      const startInput = document.getElementById('clipStart');
+      const endInput = document.getElementById('clipEnd');
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+      const updateFromPosition = (clientX, side) => {
+        const rect = track.getBoundingClientRect();
+        const percent = clamp((clientX - rect.left) / rect.width, 0, 1);
+        const value = Number((percent * ringtoneClipDuration).toFixed(1));
+        if (side === 'left') {
+          const maxValue = Math.max(0.1, Number(endInput.value) - 0.1);
+          startInput.value = clamp(value, 0, maxValue).toFixed(1);
+        } else {
+          const minValue = Math.min(ringtoneClipDuration, Number(startInput.value) + 0.1);
+          endInput.value = clamp(value, minValue, ringtoneClipDuration).toFixed(1);
+        }
+        updateClipUI();
+      };
+
+      const handleMove = event => {
+        if (!ringtoneClipDragging) return;
+        updateFromPosition(event.clientX, ringtoneClipDragging);
+      };
+
+      const stopMove = () => {
+        ringtoneClipDragging = null;
+        document.removeEventListener('pointermove', handleMove);
+        document.removeEventListener('pointerup', stopMove);
+      };
+
+      const bindHandle = (handle, side) => {
+        if (!handle) return;
+        handle.addEventListener('pointerdown', event => {
+          ringtoneClipDragging = side;
+          event.preventDefault();
+          document.addEventListener('pointermove', handleMove);
+          document.addEventListener('pointerup', stopMove);
+        });
+      };
+
+      bindHandle(leftHandle, 'left');
+      bindHandle(rightHandle, 'right');
+
+      if (track) {
+        track.addEventListener('pointerdown', event => {
+          const rect = track.getBoundingClientRect();
+          const startVal = Number(startInput.value) || 0;
+          const endVal = Number(endInput.value) || ringtoneClipDuration;
+          const clickPercent = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+          const clickValue = clickPercent * ringtoneClipDuration;
+          ringtoneClipDragging = Math.abs(clickValue - startVal) < Math.abs(clickValue - endVal) ? 'left' : 'right';
+          updateFromPosition(event.clientX, ringtoneClipDragging);
+          document.addEventListener('pointermove', handleMove);
+          document.addEventListener('pointerup', stopMove);
+        });
+      }
+
+      if (startInput) startInput.addEventListener('input', () => { stopClipPreview(); updateClipUI(); });
+      if (endInput) endInput.addEventListener('input', () => { stopClipPreview(); updateClipUI(); });
+    }
+
+    function stopClipPreview() {
+      const preview = document.getElementById('ringtonePreview');
+      const playHead = document.getElementById('clipPlayHead');
+      const previewBtn = document.getElementById('clipPreviewBtn');
+      ringtoneClipPreviewActive = false;
+      ringtoneClipPlaying = false;
+      if (preview) {
+        try { preview.pause(); } catch (e) {}
+        preview.ontimeupdate = null;
+      }
+      if (playHead) playHead.style.left = '0%';
+      if (previewBtn) previewBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+      if (ringtoneClipPreviewTimeout) {
+        cancelAnimationFrame(ringtoneClipPreviewTimeout);
+        ringtoneClipPreviewTimeout = null;
+      }
+    }
+
+    function toggleClipPreview() {
+      if (ringtoneClipPlaying) {
+        stopClipPreview();
+      } else {
+        startClipPreview();
+      }
+    }
+
+    async function startClipPreview() {
+      const preview = document.getElementById('ringtonePreview');
+      const previewBtn = document.getElementById('clipPreviewBtn');
+      if (!preview || !preview.src) { alert('Load a ringtone first.'); return; }
+      const start = Number(document.getElementById('clipStart').value) || 0;
+      const end = Number(document.getElementById('clipEnd').value) || 0;
+      if (end <= start) { alert('Invalid clip range.'); return; }
+      stopClipPreview();
+      ringtoneClipPreviewActive = true;
+      ringtoneClipPlaying = true;
+      if (previewBtn) previewBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+      preview.currentTime = start;
+      preview.play().catch(() => {});
+
+      const updateProgress = () => {
+        const playHead = document.getElementById('clipPlayHead');
+        const clipTrack = document.getElementById('clipTrack');
+        const startInput = document.getElementById('clipStart');
+        const endInput = document.getElementById('clipEnd');
+        if (!ringtoneClipPreviewActive || !playHead || !clipTrack || !startInput || !endInput) return;
+        const totalDuration = Math.max(0.1, Math.min(20, ringtoneClipDuration));
+        const clipStart = Number(startInput.value) || 0;
+        const clipEnd = Number(endInput.value) || totalDuration;
+        const leftPercent = (clipStart / totalDuration) * 100;
+        const rightPercent = (clipEnd / totalDuration) * 100;
+        const now = preview.currentTime;
+        const innerPercent = Math.min(100, Math.max(0, ((now - clipStart) / (clipEnd - clipStart)) * 100));
+        const absolutePercent = leftPercent + ((rightPercent - leftPercent) * innerPercent / 100);
+        playHead.style.left = `${absolutePercent}%`;
+        if (now >= clipEnd || preview.paused) {
+          stopClipPreview();
+          return;
+        }
+        ringtoneClipPreviewTimeout = requestAnimationFrame(updateProgress);
+      };
+      preview.ontimeupdate = () => {
+        if (!ringtoneClipPreviewActive) return;
+        if (preview.currentTime >= end) {
+          stopClipPreview();
+          preview.currentTime = start;
+        }
+      };
+      ringtoneClipPreviewTimeout = requestAnimationFrame(updateProgress);
+    }
+
+    function previewClip() {
+      startClipPreview();
+      const preview = document.getElementById('ringtonePreview');
+      if (!preview || !preview.src) { alert('Load a ringtone first.'); return; }
+      const start = Number(document.getElementById('clipStart').value) || 0;
+      const end = Number(document.getElementById('clipEnd').value) || 0;
+      if (end <= start) { alert('Invalid clip range.'); return; }
+      stopClipPreview();
+      ringtoneClipPreviewActive = true;
+      preview.currentTime = start;
+      preview.play().catch(() => {});
+
+      const updateProgress = () => {
+        const playHead = document.getElementById('clipPlayHead');
+        if (!ringtoneClipPreviewActive || !playHead) return;
+        const now = preview.currentTime;
+        const percent = Math.min(100, Math.max(0, ((now - start) / (end - start)) * 100));
+        playHead.style.left = `${percent}%`;
+        if (now >= end || preview.paused) {
+          stopClipPreview();
+          return;
+        }
+        ringtoneClipPreviewTimeout = requestAnimationFrame(updateProgress);
+      };
+      preview.ontimeupdate = () => {
+        if (!ringtoneClipPreviewActive) return;
+        if (preview.currentTime >= end) {
+          stopClipPreview();
+          preview.currentTime = start;
+        }
+      };
+      ringtoneClipPreviewTimeout = requestAnimationFrame(updateProgress);
+    }
+
+    async function applyClip() {
+      const preview = document.getElementById('ringtonePreview');
+      if (!preview || !preview.src) { alert('No ringtone loaded to clip.'); return; }
+      const start = Number(document.getElementById('clipStart').value) || 0;
+      const end = Number(document.getElementById('clipEnd').value) || 0;
+      if (end <= start) { alert('Invalid clip range.'); return; }
+      const duration = Math.min(20, end - start);
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) { alert('AudioContext not supported.'); return; }
+      const ctx = new AudioCtx();
+      try {
+        const resp = await fetch(preview.src);
+        const ab = await resp.arrayBuffer();
+        const buffer = await ctx.decodeAudioData(ab.slice(0));
+        const sampleRate = buffer.sampleRate;
+        const channels = buffer.numberOfChannels;
+        const frameCount = Math.floor(duration * sampleRate);
+        const offline = new OfflineAudioContext(channels, frameCount, sampleRate);
+        const src = offline.createBufferSource();
+        src.buffer = buffer;
+        src.connect(offline.destination);
+        src.start(0, start, duration);
+        const rendered = await offline.startRendering();
+        const wavArray = audioBufferToWav(rendered);
+        const blob = new Blob([wavArray], { type: 'audio/wav' });
+        const base64 = await blobToBase64(blob);
+        try {
+          await db.ref("users/" + me + "/ringtone").set({ data: base64, name: 'ringtone_clipped.wav', type: 'audio/wav' });
+          preview.src = base64;
+          const nameEl = document.getElementById('ringtoneName'); if (nameEl) nameEl.textContent = 'ringtone_clipped.wav';
+          alert('Clip saved (max 20s).');
+        } catch (err) {
+          localStorage.setItem('ringtone_local', JSON.stringify({ data: base64, name: 'ringtone_clipped.wav', type: 'audio/wav' }));
+          preview.src = base64;
+          const nameEl = document.getElementById('ringtoneName'); if (nameEl) nameEl.textContent = 'ringtone_clipped.wav';
+          alert('Clip saved locally.');
+        }
+      } catch (err) {
+        alert('Failed to create clip: ' + err.message);
+      }
+      try { ctx.close(); } catch(e) {}
+      const clipUI = document.getElementById('ringtoneClipUI'); if (clipUI) clipUI.style.display = 'none';
+    }
+
+    function removeRingtone() {
+      if (!me) { alert('Please log in first.'); return; }
+      try {
+        db.ref("users/" + me + "/ringtone").remove().then(() => {
+          const el = document.getElementById('ringtonePreview');
+          const nameEl = document.getElementById('ringtoneName');
+          if (el) { el.src = ''; el.style.display = 'none'; }
+          if (nameEl) nameEl.textContent = 'No ringtone uploaded';
+          alert('Ringtone removed.');
+        }).catch(() => {
+          localStorage.removeItem('ringtone_local');
+          const el = document.getElementById('ringtonePreview');
+          const nameEl = document.getElementById('ringtoneName');
+          if (el) { el.src = ''; el.style.display = 'none'; }
+          if (nameEl) nameEl.textContent = 'No ringtone uploaded';
+          alert('Ringtone removed locally.');
+        });
+      } catch (err) {
+        localStorage.removeItem('ringtone_local');
+        const el = document.getElementById('ringtonePreview');
+        const nameEl = document.getElementById('ringtoneName');
+        if (el) { el.src = ''; el.style.display = 'none'; }
+        if (nameEl) nameEl.textContent = 'No ringtone uploaded';
+        alert('Ringtone removed locally.');
+      }
+    }
+
     function sendSystemMsg() {
       const text = document.getElementById("systemMsgText").value.trim();
       if (!text) return;
@@ -1700,6 +2968,7 @@
         const ic = document.getElementById('incomingControls');
         if (ic) ic.style.display = 'none';
         callActionPanel.classList.remove('incoming');
+        try { stopRingtone(); } catch(e) {}
       }
       function formatDuration(ms) { const seconds = Math.floor(ms / 1000); const minutes = Math.floor(seconds / 60); return `${minutes}:${String(seconds % 60).padStart(2, '0')}`; }
       function generateRoomId() { return Math.random().toString(36).slice(2, 11); }
@@ -1711,9 +2980,13 @@
         if (localStream) {
           const videoTrack = localStream.getVideoTracks()[0];
           if (useVideo && !videoTrack) {
-            const extra = await navigator.mediaDevices.getUserMedia({video: true});
-            const track = extra.getVideoTracks()[0];
-            localStream.addTrack(track);
+            try {
+              const extra = await navigator.mediaDevices.getUserMedia({video: true});
+              const track = extra.getVideoTracks()[0];
+              localStream.addTrack(track);
+            } catch(e) {
+              // ignore
+            }
           }
           if (videoTrack) videoTrack.enabled = useVideo;
           localVid.srcObject = localStream;
@@ -1724,9 +2997,38 @@
           localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: useVideo});
           localVid.srcObject = localStream;
           if (localAudio) localAudio.srcObject = localStream;
+          return;
         } catch (err) {
-          alert('Could not access microphone/camera: ' + err.message);
-          throw err;
+          // If video was requested but failed, try enumerating cameras and attempt each
+          if (useVideo && navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+            try {
+              const devices = await navigator.mediaDevices.enumerateDevices();
+              const cams = devices.filter(d => d.kind === 'videoinput');
+              for (let i = 0; i < cams.length; i++) {
+                const cam = cams[i];
+                try {
+                  localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: { deviceId: { exact: cam.deviceId } }});
+                  localVid.srcObject = localStream;
+                  if (localAudio) localAudio.srcObject = localStream;
+                  return;
+                } catch (e) {
+                  // try next
+                }
+              }
+            } catch (e) {
+              // fallthrough
+            }
+          }
+          // fallback to audio-only
+          try {
+            localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+            localVid.srcObject = localStream;
+            if (localAudio) localAudio.srcObject = localStream;
+            return;
+          } catch (e) {
+            alert('Could not access microphone/camera: ' + e.message);
+            throw e;
+          }
         }
       }
       function stopLocalStream() { if (!localStream) return; localStream.getTracks().forEach(track => track.stop()); localStream = null; if (localAudio) localAudio.srcObject = null; }
@@ -1761,11 +3063,11 @@
           const accept = document.createElement('button');
           accept.style.cssText = 'margin-right:8px;padding:6px 10px;border-radius:8px;border:none;background:#2fce73;color:#021;cursor:pointer;font-weight:700';
           accept.textContent = 'Accept';
-          accept.onclick = () => { joinCallRoom(roomId); notif.remove(); };
+          accept.onclick = () => { try { stopRingtone(); } catch(e) {} incomingRoomPending = roomId; joinCallRoom(roomId); notif.remove(); };
           const decline = document.createElement('button');
           decline.style.cssText = 'padding:6px 10px;border-radius:8px;border:none;background:#6b7280;color:white;cursor:pointer';
           decline.textContent = 'Decline';
-          decline.onclick = () => { notif.remove(); };
+          decline.onclick = () => { declineIncoming(roomId); notif.remove(); };
           notif.appendChild(accept);
           notif.appendChild(decline);
           document.body.appendChild(notif);
@@ -1773,6 +3075,8 @@
           incomingRoomPending = roomId;
           callActionPanel.classList.add('incoming');
           callActionPanel.title = 'Incoming ' + meta.mode + ' call';
+          // play ringtone if available
+          try { playRingtone(); } catch(e) {}
         });
       }
       function getCurrentTarget() { return window.currentChatPeer || null; }
@@ -1796,9 +3100,11 @@
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
         await sendSignal('offer', {sdp: pc.localDescription});
+        stopRingtone();
       }
       async function joinCallRoom(roomId) {
         if (!me) { alert('Please log in first.'); return; }
+        stopRingtone();
         const roomSnap = await callRoomsRef.child(roomId).once('value');
         const meta = roomSnap.val();
         if (!meta) { alert('Call room not found for code: ' + roomId); return; }
@@ -1876,8 +3182,36 @@
       // incoming controls inside call window
       const incomingAccept = document.getElementById('incomingAccept');
       const incomingDecline = document.getElementById('incomingDecline');
-      if (incomingAccept) incomingAccept.addEventListener('click', () => { if (incomingRoomPending) { joinCallRoom(incomingRoomPending); hideIncomingControls(); } });
-      if (incomingDecline) incomingDecline.addEventListener('click', () => { if (incomingRoomPending) { incomingRoomPending = null; hideIncomingControls(); } });
+      if (incomingAccept) incomingAccept.addEventListener('click', () => { if (incomingRoomPending) { try { stopRingtone(); } catch(e){} joinCallRoom(incomingRoomPending); hideIncomingControls(); } });
+      if (incomingDecline) incomingDecline.addEventListener('click', () => { if (incomingRoomPending) { declineIncoming(incomingRoomPending); hideIncomingControls(); } });
+      function declineIncoming(roomId) {
+        try { stopRingtone(); } catch(e) {}
+        incomingRoomPending = null;
+        callActionPanel.classList.remove('incoming');
+        if (roomId) {
+          userCallRoomsRef.child(me).child(roomId).remove().catch(() => {});
+          callRoomsRef.child(roomId).update({ status: 'missed' }).catch(() => {});
+        }
+      }
+      function playRingtone() {
+        const p = document.getElementById('ringtonePlayer');
+        const preview = document.getElementById('ringtonePreview');
+        if (p && preview && preview.src) {
+          p.src = preview.src;
+          p.loop = true;
+          p.play().catch(() => {});
+        } else if (p) {
+          // try local storage
+          try {
+            const local = JSON.parse(localStorage.getItem('ringtone_local'));
+            if (local && local.data) { p.src = local.data; p.loop = true; p.play().catch(() => {}); }
+          } catch(e) {}
+        }
+      }
+      function stopRingtone() {
+        const p = document.getElementById('ringtonePlayer');
+        if (p) { try { p.pause(); p.currentTime = 0; } catch(e) {} p.src = ''; }
+      }
       callEnd.addEventListener('click', () => endCall('User ended'));
       callFullscreen.addEventListener('click', () => callWindow.classList.toggle('fullscreen'));
       callMute.addEventListener('click', () => {
