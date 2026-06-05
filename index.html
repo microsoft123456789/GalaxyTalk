@@ -43,39 +43,249 @@
     }
 
     .card {
-      background: rgba(40, 0, 70, .9);
+      background: rgba(10, 2, 25, 0.96);
       padding: 28px;
-      border-radius: 16px;
-      width: 340px;
-      box-shadow: 0 0 30px rgba(160, 80, 255, .6);
-      text-align: center
+      border-radius: 22px;
+      width: min(360px, 92vw);
+      box-shadow: 0 24px 60px rgba(98, 42, 170, 0.34);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+      backdrop-filter: blur(16px);
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+
+    .card .card-subtitle {
+      margin: 0 auto 16px;
+      max-width: 280px;
+      color: #c7d2fe;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     input {
       width: 100%;
-      padding: 12px;
+      padding: 14px 16px;
       margin-top: 12px;
-      border-radius: 10px;
-      border: 1px solid #5b2b82;
-      background: #0e0018;
-      color: white
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(18, 8, 36, 0.95);
+      color: white;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #9d7cfa;
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.14);
+    }
+
+    .panel-search {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(18, 8, 36, 0.95);
+      color: white;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .panel-search:focus {
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
+    }
+
+    .search-panel {
+      margin-bottom: 14px;
+    }
+
+    .ban-progress {
+      position: relative;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .ban-progress-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(135deg, #f97316, #ef4444);
+      border-radius: 999px;
+      transition: width 0.8s ease;
+    }
+
+    .admin-ban-status {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      color: #fbcfe8;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .admin-ban-status.banned {
+      color: #fef3c7;
     }
 
     button {
       width: 100%;
       margin-top: 14px;
-      padding: 12px;
+      padding: 14px;
       border-radius: 999px;
       border: none;
-      background: linear-gradient(135deg, #6d28d9, #9333ea);
+      background: linear-gradient(135deg, #7c3aed, #8b5cf6);
       color: white;
-      font-weight: 600;
-      cursor: pointer
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, filter 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow: 0 14px 28px rgba(124, 58, 237, 0.24);
+    }
+
+    button.secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #e7e7ff;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    button.secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .pill-btn {
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .pill-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(124, 58, 237, 0.18);
     }
 
     .error {
       color: #ff6b6b;
-      height: 18px
+      min-height: 18px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(124, 58, 237, 0.18);
+      color: #d8c4ff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px;
+      margin-bottom: 10px;
+      border-radius: 24px;
+      background: rgba(15, 4, 40, 0.95);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    }
+
+    .chat-title {
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-subtitle {
+      color: #b9bbbe;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .chat-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .sidebar .user {
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .sidebar .user:hover {
+      background: rgba(124, 58, 237, 0.14);
+      transform: translateX(2px);
+    }
+
+    #sidebarHeader span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #c7d2fe;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    #settingsPopup {
+      background: rgba(6, 8, 18, 0.98);
+    }
+
+    .settings-content {
+      background: rgba(12, 6, 24, 0.95);
+      border-radius: 28px;
+      box-shadow: 0 28px 80px rgba(0,0,0,0.35);
+    }
+
+    .settings-item {
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .settings-item:hover {
+      background: rgba(255,255,255,0.05);
+      transform: translateY(-1px);
+    }
+
+    .profile-header {
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .pfp-container {
+      box-shadow: 0 18px 40px rgba(124, 58, 237, 0.18);
+    }
+
+    .msg-wrap {
+      opacity: 0.98;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .msg-wrap:hover {
+      transform: translateX(1px);
+      box-shadow: 0 16px 34px rgba(0,0,0,0.18);
+    }
+
+    .msg-text a {
+      color: #8b5cf6;
     }
 
     #toastContainer {
@@ -145,8 +355,10 @@
     .toast-text {
       margin: 4px 0 0;
       font-size: 13px;
-      line-height: 1.4;
+      line-height: 1.5;
       opacity: 0.95;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
     .toast-close {
@@ -340,6 +552,126 @@
       display: block;
       margin-top: 10px;
       color: white;
+    }
+
+    .admin-search-summary {
+      color: #c7d2fe;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .admin-actions-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .admin-actions-panel button {
+      flex: 1 1 140px;
+      min-width: 140px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg,#8b5cf6,#ec4899);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s, filter .2s;
+    }
+
+    .admin-actions-panel button.secondary {
+      background: rgba(255,255,255,0.08);
+      color: #e5e7eb;
+    }
+
+    .admin-actions-panel button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.1);
+    }
+
+    .admin-bug-panel {
+      background: rgba(17, 10, 38, 0.92);
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      border-radius: 18px;
+      padding: 20px;
+      margin-top: 18px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+
+    .admin-bug-panel h5 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #d8b4fe;
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    .admin-bug-panel h5::before {
+      content: '\f1e2';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 900;
+    }
+
+    .admin-bug-panel h5 {
+      margin: 0 0 12px;
+      color: #c4b5fd;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .bug-report-count {
+      font-size: 24px;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .bug-report-entry {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .bug-report-entry:first-child {
+      border-top: none;
+    }
+
+    .bug-report-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .bug-report-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .bug-report-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .bug-report-meta div {
+      color: #c7d2fe;
+      font-size: 12px;
+    }
+
+    .bug-report-message {
+      margin-top: 8px;
+      color: #e5e7eb;
+      font-size: 13px;
+      line-height: 1.5;
     }
 
     .admin-user-row {
@@ -774,19 +1106,23 @@
       border: none;
       border-radius: 999px;
       padding: 10px;
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       display:flex;
       align-items:center;
       justify-content:center;
-      background: rgba(124, 58, 237, 0.9);
+      background: rgba(124, 58, 237, 0.95);
       color: white;
+      font-size: 18px;
       font-weight: 600;
       cursor: pointer;
+      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
     }
 
     .call-action-btn:hover {
-      background: #7c3aed;
+      background: #8b5cf6;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(124, 58, 237, 0.25);
     }
 
     #callActionPanel.incoming .call-action-btn {
@@ -922,6 +1258,137 @@
     #callWindow .strength-bar span:nth-child(1) { height: 5px; }
     #callWindow .strength-bar span:nth-child(2) { height: 8px; }
     #callWindow .strength-bar span:nth-child(3) { height: 12px; }
+
+    #callWindow.incoming-state {
+      background: linear-gradient(180deg, rgba(17, 6, 50, 0.98), rgba(14, 4, 34, 0.99));
+      border-color: rgba(124, 58, 237, 0.55);
+      box-shadow: 0 28px 60px rgba(48, 16, 89, 0.35);
+    }
+
+    #callWindow .incoming-call-state {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px 16px 18px;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    #callWindow .incoming-banner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    #callWindow .incoming-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid rgba(79, 70, 229, 0.4);
+      position: relative;
+      background: rgba(255,255,255,0.06);
+    }
+
+    #callWindow .incoming-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #callWindow .incoming-avatar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      box-shadow: 0 0 0 6px rgba(79, 70, 229, 0.18);
+      animation: pulseGlow 1.8s ease-in-out infinite;
+    }
+
+    #callWindow .incoming-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    #callWindow .incoming-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+    }
+
+    #callWindow .incoming-subtitle {
+      color: #c7d2fe;
+      font-size: 13px;
+    }
+
+    #callWindow .incoming-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding-bottom: 8px;
+    }
+
+    #callWindow .incoming-actions .pill-btn {
+      border-radius: 999px;
+      padding: 16px 22px;
+      min-width: 80px;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.2);
+    }
+
+    #callWindow .incoming-actions .accept {
+      background: linear-gradient(135deg,#2dd4bf,#14b8a6);
+      color: #021;
+    }
+
+    #callWindow .incoming-actions .decline {
+      background: linear-gradient(135deg,#ef4444,#f97316);
+      color: white;
+    }
+
+    #callWindow.incoming-state .call-body,
+    #callWindow.incoming-state .call-footer {
+      display: none;
+    }
+
+    #callWindow.incoming-state .incoming-call-state {
+      display: flex;
+    }
+
+    #callWindow.incoming-state #callMute,
+    #callWindow.incoming-state #callVideo,
+    #callWindow.incoming-state #shareScreenBtn {
+      display: none;
+    }
+
+    .settings-item textarea#bugReportText {
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      box-shadow: inset 0 0 20px rgba(124, 58, 237, 0.08);
+    }
+
+    .settings-item button[onclick="reportBug()"] {
+      min-width: 180px;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .settings-item button[onclick="reportBug()"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(124, 58, 237, 0.28);
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(79,70,229,0.2); }
+      50% { box-shadow: 0 0 0 16px rgba(79,70,229,0.05); }
+    }
 
     #settingsPopup {
       position: fixed;
@@ -1291,6 +1758,21 @@
           </div>
           <input type="range" id="starSpeedRange" min="1" max="50" value="10" style="width: 100%;" oninput="updateSpaceSettings()">
         </div>
+
+        <div class="settings-item" style="flex-direction: column; align-items: flex-start; gap: 10px; margin-top: 16px;">
+          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div class="settings-item-label">Report a Bug</div>
+              <div class="settings-item-value">Send feedback directly</div>
+            </div>
+            <div style="font-size: 24px; color: #f472b6;"><i class="fa-solid fa-bug"></i></div>
+          </div>
+          <textarea id="bugReportText" placeholder="Describe the issue or bug you found..." style="width:100%; min-height:140px; background:#0f0720; color:white; border:1px solid rgba(124,58,237,0.3); border-radius:18px; padding:16px; resize:vertical;"></textarea>
+          <div style="display:flex;gap:10px;align-items:center;width:100%;flex-wrap:wrap;">
+            <button onclick="reportBug()" style="width:auto;padding:12px 22px;border-radius:999px;background:linear-gradient(135deg,#7c3aed,#ec4899);color:white;border:none;box-shadow:0 16px 30px rgba(124,58,237,0.18);">Submit Bug Report</button>
+            <span id="bugReportStatus" style="color:#c7d2fe;font-size:13px;margin-top:0;">Your bug report will appear for admin review with profile and timestamp.</span>
+          </div>
+        </div>
       </div>
 
       <!-- Users Section -->
@@ -1307,6 +1789,17 @@
             <button style="width:auto;padding:8px 18px;font-size:13px;background:#6b7280;border-radius:999px;" onclick="renderAdminUsers()">Refresh Users</button>
           </div>
 
+          <div class="search-panel">
+            <input id="adminSearchInput" class="panel-search" placeholder="Search users..." oninput="renderAdminUsers()">
+            <div class="admin-search-summary" id="adminSearchSummary">Showing 0 users</div>
+          </div>
+
+          <div class="admin-actions-panel">
+            <button onclick="renderAdminUsers()">Refresh members</button>
+            <button class="secondary" onclick="startDirectCall('voice')">Voice Call</button>
+            <button class="secondary" onclick="startDirectCall('video')">Video Call</button>
+          </div>
+
           <div class="admin-panel-cards">
             <div class="admin-panel-card">
               <h5>Total Users</h5>
@@ -1320,6 +1813,16 @@
               <h5>Pending Actions</h5>
               <strong id="adminPendingActions">0</strong>
             </div>
+            <div class="admin-panel-card">
+              <h5>Bug Reports</h5>
+              <strong id="adminBugCount">0</strong>
+            </div>
+          </div>
+
+          <div class="admin-bug-panel">
+            <h5>Bug Reports</h5>
+            <div class="bug-report-count" id="adminBugSummary">No reports yet</div>
+            <div id="adminBugList"></div>
           </div>
 
           <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 20px;">
@@ -1365,29 +1868,33 @@
   <div id="siteAccess" class="center">
     <div class="card">
       <h2>GalaxyTalk</h2>
+      <p class="card-subtitle">Enter the network access code to join the GalaxyTalk space station.</p>
       <input id="sitePass" placeholder="Site Password">
       <div id="siteErr" class="error"></div>
-      <button onclick="checkSite()">Enter</button>
+      <button onclick="checkSite()"><i class="fa-solid fa-lock"></i> Enter</button>
     </div>
   </div>
 
   <!-- Join Code Overlay (styled like site password) -->
   <div id="joinOverlay" class="center hidden" style="display:none !important;">
     <div class="card">
-      <h2>Join Call</h2>
+      <h2>Join a Call</h2>
+      <p class="card-subtitle">Enter a join code or type CREATE to open a new room. Call controls appear once you're connected.</p>
       <input id="joinCodeInput" placeholder="Enter Join Code or type CREATE">
       <div id="joinErr" class="error"></div>
-      <button onclick="submitJoinCode()">Join</button>
-      <button style="margin-top:8px;background:#6b7280;" onclick="closeJoinOverlay()">Cancel</button>
+      <button onclick="submitJoinCode()"><i class="fa-solid fa-sign-in-alt"></i> Join</button>
+      <button class="secondary" style="margin-top:8px;" onclick="closeJoinOverlay()">Cancel</button>
     </div>
   </div>
 
   <div id="login" class="center hidden">
     <div class="card">
+      <h2>Welcome Back</h2>
+      <p class="card-subtitle">Login with your GalaxyTalk username and PIN to continue.</p>
       <input id="username" placeholder="Username">
       <input id="pin" placeholder="4-digit PIN">
       <div id="loginErr" class="error"></div>
-      <button onclick="login()">Login</button>
+      <button onclick="login()"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
     </div>
   </div>
 
@@ -1398,6 +1905,9 @@
     <div id="dmPicker">
       <h3>Personalize your DMs</h3>
       <p>Choose which people appear in your sidebar.</p>
+      <div class="search-panel">
+        <input id="dmSearchInput" class="panel-search" placeholder="Search people..." oninput="renderDmPickerList()">
+      </div>
       <div id="dmPickerList"></div>
       <div id="dmPickerBtns">
         <button style="background:#6b7280;" onclick="closeDmPicker()">Cancel</button>
@@ -1410,11 +1920,22 @@
     <div id="sidebar">
       <div id="sidebarHeader">
         <button id="addDmBtn" onclick="openDmPicker()" title="Personalize your DMs">+</button>
-        <span>Personalize your DMs</span>
+        <span><i class="fa-solid fa-meteor"></i> Direct Messages</span>
       </div>
       <div id="sidebarList"></div>
     </div>
     <div id="chat">
+      <div class="chat-header">
+        <div>
+          <div class="chat-title"><i class="fa-solid fa-comments"></i> GalaxyTalk</div>
+          <div class="chat-subtitle">Jump into global chat, private DMs, or start a call from here.</div>
+        </div>
+        <div class="chat-actions">
+          <button class="pill-btn" onclick="openDmPicker()" title="Customize sidebar"><i class="fa-solid fa-user-gear"></i></button>
+          <button class="pill-btn" onclick="promptJoinCode()" title="Join a call"><i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+          <button class="pill-btn" onclick="toggleSettings()" title="Settings"><i class="fa-solid fa-gear"></i></button>
+        </div>
+      </div>
       <div id="messages"></div>
       <div id="typing"></div>
       <div id="inputBar">
@@ -1454,6 +1975,9 @@
     let mediaRecorder = null, audioChunks = [];
     let notifsEnabled = false;
     let starConfig = { count: 200, speedMult: 1 };
+    let dmPickerFilter = '';
+    let adminSearchFilter = '';
+    let banTimerInterval = null;
 
     function checkSite() {
       const sp = document.getElementById("sitePass");
@@ -1467,6 +1991,7 @@
         sa.style.display = "none"; // Backup
         l.classList.remove("hidden");
         l.style.display = ""; // Backup
+        se.textContent = "";
         const joinOverlay = document.getElementById('joinOverlay');
         const callWindow = document.getElementById('callWindow');
         const callActionPanel = document.getElementById('callActionPanel');
@@ -1474,6 +1999,7 @@
         if (callWindow) { callWindow.classList.add('hidden'); callWindow.style.display = 'none'; }
         if (callActionPanel) { callActionPanel.classList.add('hidden'); callActionPanel.style.display = 'none'; }
       } else {
+        showToast('Wrong Password', 'The site password is incorrect.', 'error', false);
         se.textContent = "Wrong password";
       }
     }
@@ -1491,6 +2017,10 @@
       const username = rawUsername;
       if (!username) {
         showToast('Invalid login', 'Enter your username.', 'error');
+        return;
+      }
+      if (!pn.value.trim()) {
+        showToast('Invalid login', 'Enter your PIN.', 'error');
         return;
       }
       let matchedUser = Object.keys(USERS).find(u => u.toLowerCase() === username.toLowerCase());
@@ -1518,7 +2048,7 @@
         console.warn('Could not load user pin override:', err);
       }
 
-      if (correctPin !== pn.value.trim()) {
+      if (String(correctPin) !== pn.value.trim()) {
         showToast('Wrong PIN', 'Invalid username or PIN.', 'error', false);
         return;
       }
@@ -1613,6 +2143,7 @@
       loadUsers();
       if (me === "Elnathan") {
         renderAdminUsers();
+        loadBugReports();
       }
       openChat("global");
       initCallSystem();
@@ -1667,6 +2198,7 @@
     async function renderAdminUsers() {
       const table = document.getElementById('adminUserTable');
       if (!table) return;
+      adminSearchFilter = document.getElementById('adminSearchInput')?.value.trim().toLowerCase() || '';
       table.innerHTML = '';
       const header = document.createElement('div');
       header.className = 'admin-user-row admin-user-header';
@@ -1680,7 +2212,12 @@
 
       const userSnap = await db.ref('users').once('value').catch(() => ({ val: () => null, exists: () => false }));
       const dbUsers = userSnap.exists() ? Object.keys(userSnap.val() || {}) : [];
-      const users = Array.from(new Set([...Object.keys(USERS), ...dbUsers])).sort((a,b)=>a.localeCompare(b, undefined, {sensitivity:'base'}));
+      const allUsers = Array.from(new Set([...Object.keys(USERS), ...dbUsers])).sort((a,b)=>a.localeCompare(b, undefined, {sensitivity:'base'}));
+      const totalUsersCount = allUsers.length;
+      let users = allUsers;
+      if (adminSearchFilter) {
+        users = users.filter(u => u.toLowerCase().includes(adminSearchFilter));
+      }
       await Promise.all(users.map(async user => {
         const safe = adminSafeId(user);
         const displaySnap = await db.ref('users/' + user + '/displayName').once('value').catch(() => ({ val: () => null }));
@@ -1691,11 +2228,20 @@
         const pfp = pfpSnap.val() || 'https://www.gravatar.com/avatar/0?d=mp&f=y';
         const pin = pinSnap.exists() ? pinSnap.val() : USERS[user];
         let banText = 'Not banned';
+        let banInner = '';
+        let banUntil = '';
+        let banStart = '';
         if (bannedSnap.exists()) {
           const banData = bannedSnap.val();
           const until = Number(banData.until || 0);
+          const start = Number(banData.start || banData.createdAt || 0);
           if (until > Date.now()) {
             banText = `Banned (${formatTimeLeft(until - Date.now())})`;
+            banUntil = until;
+            banStart = start || Date.now();
+            const duration = Math.max(1, until - banStart);
+            const progress = Math.min(100, Math.max(0, Math.round(((Date.now() - banStart) / duration) * 100)));
+            banInner = `<div class="ban-progress"><div class="ban-progress-inner" id="banProgress_${safe}" style="width:${progress}%;"></div></div>`;
           } else {
             await db.ref('bans/' + user).remove();
           }
@@ -1719,7 +2265,8 @@
             <button class="secondary" onclick="deleteUser('${user}')" style="margin-top:8px;background:#ef4444;">Delete</button>
           </div>
           <div class="admin-user-cell">
-            <div class="admin-ban-status" id="adminBanStatus_${safe}">${banText}</div>
+            <div class="admin-ban-status${banUntil ? ' banned' : ''}" id="adminBanStatus_${safe}" data-ban-until="${banUntil}" data-ban-start="${banStart}">${banText}</div>
+            ${banInner}
             <div class="admin-ban-duration">
               <input id="banDays_${safe}" type="number" min="0" max="30" placeholder="Days" value="0">
               <input id="banHours_${safe}" type="number" min="0" max="23" placeholder="Hours" value="0">
@@ -1734,15 +2281,50 @@
         `;
         table.appendChild(row);
       }));
-      const totalUsers = users.length;
-      const activeBans = await Promise.all(users.map(async user => {
+      const filteredUsers = users.length;
+      const activeBans = await Promise.all(allUsers.map(async user => {
         const banSnap = await db.ref('bans/' + user).once('value').catch(() => ({ exists: () => false }));
         return banSnap.exists() ? 1 : 0;
       }));
       const banCount = activeBans.reduce((sum, value) => sum + value, 0);
-      document.getElementById('adminTotalUsers').textContent = totalUsers;
+      document.getElementById('adminTotalUsers').textContent = totalUsersCount;
       document.getElementById('adminActiveBans').textContent = banCount;
       document.getElementById('adminPendingActions').textContent = banCount > 0 ? banCount : 0;
+      const searchSummary = document.getElementById('adminSearchSummary');
+      if (searchSummary) {
+        searchSummary.textContent = `Showing ${filteredUsers} of ${totalUsersCount} users`;
+      }
+      ensureBanTimerLoop();
+      updateBanTimerUI();
+    }
+
+    function ensureBanTimerLoop() {
+      if (banTimerInterval) return;
+      banTimerInterval = setInterval(updateBanTimerUI, 1000);
+    }
+
+    function updateBanTimerUI() {
+      document.querySelectorAll('.admin-ban-status[data-ban-until]').forEach(el => {
+        const until = Number(el.dataset.banUntil || 0);
+        const start = Number(el.dataset.banStart || 0);
+        if (!until || until <= Date.now()) {
+          el.classList.remove('banned');
+          el.textContent = 'Not banned';
+          el.dataset.banUntil = '';
+          el.dataset.banStart = '';
+          const progress = el.parentElement?.querySelector('.ban-progress-inner');
+          if (progress) progress.style.width = '0%';
+          return;
+        }
+        el.classList.add('banned');
+        const timeLeft = until - Date.now();
+        el.textContent = `Banned (${formatTimeLeft(timeLeft)})`;
+        const total = Math.max(1, until - (start || Date.now()));
+        const elapsed = Math.max(0, Date.now() - (start || Date.now()));
+        const pct = Math.min(100, Math.max(0, Math.round((elapsed / total) * 100)));
+        const progress = el.parentElement?.querySelector('.ban-progress-inner');
+        if (progress) progress.style.width = pct + '%';
+      });
     }
 
     function addUser() {
@@ -1759,7 +2341,7 @@
         showToast('Add User Error', 'PIN must be 4 digits.', 'error', false);
         return;
       }
-      const normalized = username.trim();
+      const normalized = username;
       if (Object.keys(USERS).some(u => u.toLowerCase() === normalized.toLowerCase())) {
         showToast('Add User Error', 'A user with that name already exists.', 'error', false);
         return;
@@ -1783,9 +2365,6 @@
       }).catch(err => {
         console.error('Add user failed', err);
         showToast('Add User Error', 'Could not check existing user.', 'error', false);
-      });
-        console.error('Add user failed', err);
-        showToast('Add User Error', 'Could not add user.', 'error', false);
       });
     }
 
@@ -1822,7 +2401,7 @@
         db.ref('users/' + target + '/pfp').set(base64).then(() => {
           renderAdminUsers();
         }).catch(() => {
-          alert('Unable to update profile picture');
+          showToast('PFP Error', 'Unable to update profile picture.', 'error', false);
         });
       };
       reader.readAsDataURL(file);
@@ -1846,7 +2425,7 @@
     function editUserPin(user) {
       const newPin = prompt('Enter new 4-digit PIN for ' + user + ':', '');
       if (!newPin || newPin.length !== 4 || isNaN(newPin)) {
-        alert('PIN must be 4 digits.');
+        showToast('PIN Error', 'PIN must be 4 digits.', 'error', false);
         return;
       }
       db.ref('users/' + user + '/pin').set(newPin).then(() => {
@@ -1862,14 +2441,14 @@
       const secs = Number(document.getElementById('banSecs_' + safe).value) || 0;
       const duration = ((days * 86400) + (hours * 3600) + (mins * 60) + secs) * 1000;
       if (duration <= 0) {
-        alert('Enter a ban duration.');
+        showToast('Ban Error', 'Enter a ban duration before banning.', 'error', false);
         return;
       }
       const until = Date.now() + duration;
-      db.ref('bans/' + user).set({ until, bannedBy: me, createdAt: Date.now() }).then(() => {
+      db.ref('bans/' + user).set({ until, start: Date.now(), bannedBy: me, createdAt: Date.now() }).then(() => {
         renderAdminUsers();
       }).catch(() => {
-        alert('Unable to ban user.');
+        showToast('Ban Error', 'Unable to ban user.', 'error', false);
       });
     }
 
@@ -1877,7 +2456,7 @@
       db.ref('bans/' + user).remove().then(() => {
         renderAdminUsers();
       }).catch(() => {
-        alert('Unable to unban user.');
+        showToast('Ban Error', 'Unable to unban user.', 'error', false);
       });
     }
 
@@ -1957,13 +2536,25 @@
     }
 
     function openDmPicker() {
+      const searchInput = document.getElementById('dmSearchInput');
+      if (searchInput) {
+        searchInput.value = dmPickerFilter;
+      }
+      renderDmPickerList();
+      document.getElementById("dmPickerOverlay").classList.remove("hidden");
+    }
+
+    function renderDmPickerList() {
       const list = document.getElementById("dmPickerList");
+      if (!list) return;
+      dmPickerFilter = document.getElementById('dmSearchInput')?.value.trim().toLowerCase() || '';
       list.innerHTML = "";
       const saved = getVisibleUsers();
       Object.keys(USERS).forEach(u => {
         if (u === me) return;
         if (u === "test" && me !== "Elnathan") return;
         if (me === "test" && u !== "Elnathan") return;
+        if (dmPickerFilter && !u.toLowerCase().includes(dmPickerFilter)) return;
         const checked = saved.includes(u);
         const item = document.createElement("label");
         item.className = "dm-pick-item";
@@ -1980,7 +2571,6 @@
           if (s.val()) item.querySelector("img").src = s.val();
         }).catch(() => {});
       });
-      document.getElementById("dmPickerOverlay").classList.remove("hidden");
     }
 
     function closeDmPicker() {
@@ -2113,7 +2703,7 @@
       const file = input.files[0];
       if (!file) return;
       if (file.size > 2 * 1024 * 1024) {
-        alert("File too large (max 2MB)");
+        showToast('Upload Error', 'File too large (max 2MB).', 'error', false);
         return;
       }
       const reader = new FileReader();
@@ -2149,7 +2739,7 @@
         mediaRecorder.onstop = async () => {
           const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
           if (audioBlob.size > 2 * 1024 * 1024) {
-            alert("Recording too large (max 2MB)");
+            showToast('Recording Error', 'Recording too large (max 2MB).', 'error', false);
             return;
           }
           const reader = new FileReader();
@@ -2170,7 +2760,7 @@
         btn.classList.add('recording');
         btn.innerHTML = '<i class="fa-solid fa-stop" aria-hidden="true"></i>';
       } catch (err) {
-        alert("Could not access microphone: " + err.message);
+        showToast('Microphone Error', 'Could not access microphone: ' + err.message, 'error', false);
       }
     }
 
@@ -2180,7 +2770,7 @@
         const btn = document.getElementById("notifToggle");
         btn.textContent = "Enable";
         btn.style.background = "#6b7280";
-        alert("Notifications disabled for this session.");
+        showToast('Notifications', 'Notifications disabled for this session.', 'info', false);
       } else {
         const permission = await Notification.requestPermission();
         if (permission === "granted") {
@@ -2188,9 +2778,9 @@
           const btn = document.getElementById("notifToggle");
           btn.textContent = "Disable";
           btn.style.background = "#ed4245";
-          alert("Notifications enabled!");
+          showToast('Notifications', 'Notifications enabled!', 'success');
         } else {
-          alert("Notification permission denied.");
+          showToast('Notifications', 'Notification permission denied.', 'error', false);
         }
       }
     }
@@ -2337,17 +2927,17 @@
 
     // Ringtone upload: validate audio contains sound before saving
     async function uploadRingtone(input) {
-      if (!me) { alert('Please log in first.'); return; }
+      if (!me) { showToast('Login Required', 'Please log in first.', 'error', false); return; }
       const file = input.files[0];
       if (!file) return;
       if (!file.type || !file.type.startsWith('audio')) {
-        alert('Please upload a valid audio file.');
+        showToast('Upload Error', 'Please upload a valid audio file.', 'error', false);
         return;
       }
 
       const arrayBuffer = await file.arrayBuffer();
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) { alert('AudioContext not supported in this browser.'); return; }
+      if (!AudioCtx) { showToast('Audio Error', 'AudioContext not supported in this browser.', 'error', false); return; }
       const ctx = new AudioCtx();
       let audioBuffer;
       try {
@@ -2362,9 +2952,9 @@
           }
           if (peak >= 0.02) break;
         }
-        if (peak < 0.02) { alert('File appears to be silent or too quiet. Upload a ringtone with audible sound.'); try { ctx.close(); } catch(e) {} return; }
+        if (peak < 0.02) { showToast('Audio Error', 'File appears to be silent or too quiet. Upload a ringtone with audible sound.', 'error', false); try { ctx.close(); } catch(e) {} return; }
       } catch (err) {
-        alert('Could not process audio file: ' + err.message);
+        showToast('Audio Error', 'Could not process audio file: ' + err.message, 'error', false);
         try { ctx.close(); } catch(e) {}
         return;
       }
@@ -2395,17 +2985,17 @@
           const nameEl = document.getElementById('ringtoneName');
           if (el) { el.src = base64; el.style.display = 'block'; }
           if (nameEl) nameEl.textContent = file.name.replace(/\.[^/.]+$/, '') + ".wav";
-          alert('Ringtone uploaded and trimmed to 20s.');
+          showToast('Ringtone Saved', 'Ringtone uploaded and trimmed to 20s.', 'success');
         } catch (err) {
           localStorage.setItem('ringtone_local', JSON.stringify({ data: base64, name: file.name.replace(/\.[^/.]+$/, '') + ".wav", type: 'audio/wav' }));
           const el = document.getElementById('ringtonePreview');
           const nameEl = document.getElementById('ringtoneName');
           if (el) { el.src = base64; el.style.display = 'block'; }
           if (nameEl) nameEl.textContent = file.name.replace(/\.[^/.]+$/, '') + ".wav";
-          alert('Ringtone saved locally (Firebase write failed).');
+          showToast('Ringtone Saved', 'Ringtone saved locally (Firebase write failed).', 'info', false);
         }
       } catch (err) {
-        alert('Failed to export ringtone: ' + err.message);
+        showToast('Audio Error', 'Failed to export ringtone: ' + err.message, 'error', false);
       }
       try { ctx.close(); } catch(e) {}
     }
@@ -2419,7 +3009,7 @@
     function showClipUI() {
       const preview = document.getElementById('ringtonePreview');
       const clipUI = document.getElementById('ringtoneClipUI');
-      if (!preview || !preview.src) { alert('No ringtone loaded to clip.'); return; }
+      if (!preview || !preview.src) { showToast('Clip Error', 'No ringtone loaded to clip.', 'error', false); return; }
       const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
       const setDefaults = () => {
         const duration = clamp(Math.min(20, isFinite(preview.duration) ? preview.duration : 20), 0.1, 20);
@@ -2580,10 +3170,10 @@
     async function startClipPreview() {
       const preview = document.getElementById('ringtonePreview');
       const previewBtn = document.getElementById('clipPreviewBtn');
-      if (!preview || !preview.src) { alert('Load a ringtone first.'); return; }
+      if (!preview || !preview.src) { showToast('Clip Error', 'Load a ringtone first.', 'error', false); return; }
       const start = Number(document.getElementById('clipStart').value) || 0;
       const end = Number(document.getElementById('clipEnd').value) || 0;
-      if (end <= start) { alert('Invalid clip range.'); return; }
+      if (end <= start) { showToast('Clip Error', 'Invalid clip range.', 'error', false); return; }
       stopClipPreview();
       ringtoneClipPreviewActive = true;
       ringtoneClipPlaying = true;
@@ -2625,10 +3215,10 @@
     function previewClip() {
       startClipPreview();
       const preview = document.getElementById('ringtonePreview');
-      if (!preview || !preview.src) { alert('Load a ringtone first.'); return; }
+      if (!preview || !preview.src) { showToast('Clip Error', 'Load a ringtone first.', 'error', false); return; }
       const start = Number(document.getElementById('clipStart').value) || 0;
       const end = Number(document.getElementById('clipEnd').value) || 0;
-      if (end <= start) { alert('Invalid clip range.'); return; }
+      if (end <= start) { showToast('Clip Error', 'Invalid clip range.', 'error', false); return; }
       stopClipPreview();
       ringtoneClipPreviewActive = true;
       preview.currentTime = start;
@@ -2658,13 +3248,13 @@
 
     async function applyClip() {
       const preview = document.getElementById('ringtonePreview');
-      if (!preview || !preview.src) { alert('No ringtone loaded to clip.'); return; }
+      if (!preview || !preview.src) { showToast('Clip Error', 'No ringtone loaded to clip.', 'error', false); return; }
       const start = Number(document.getElementById('clipStart').value) || 0;
       const end = Number(document.getElementById('clipEnd').value) || 0;
-      if (end <= start) { alert('Invalid clip range.'); return; }
+      if (end <= start) { showToast('Clip Error', 'Invalid clip range.', 'error', false); return; }
       const duration = Math.min(20, end - start);
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) { alert('AudioContext not supported.'); return; }
+      if (!AudioCtx) { showToast('Audio Error', 'AudioContext not supported.', 'error', false); return; }
       const ctx = new AudioCtx();
       try {
         const resp = await fetch(preview.src);
@@ -2686,36 +3276,36 @@
           await db.ref("users/" + me + "/ringtone").set({ data: base64, name: 'ringtone_clipped.wav', type: 'audio/wav' });
           preview.src = base64;
           const nameEl = document.getElementById('ringtoneName'); if (nameEl) nameEl.textContent = 'ringtone_clipped.wav';
-          alert('Clip saved (max 20s).');
+          showToast('Clip Saved', 'Clip saved (max 20s).', 'success');
         } catch (err) {
           localStorage.setItem('ringtone_local', JSON.stringify({ data: base64, name: 'ringtone_clipped.wav', type: 'audio/wav' }));
           preview.src = base64;
           const nameEl = document.getElementById('ringtoneName'); if (nameEl) nameEl.textContent = 'ringtone_clipped.wav';
-          alert('Clip saved locally.');
+          showToast('Clip Saved', 'Clip saved locally.', 'success');
         }
       } catch (err) {
-        alert('Failed to create clip: ' + err.message);
+        showToast('Clip Error', 'Failed to create clip: ' + err.message, 'error', false);
       }
       try { ctx.close(); } catch(e) {}
       const clipUI = document.getElementById('ringtoneClipUI'); if (clipUI) clipUI.style.display = 'none';
     }
 
     function removeRingtone() {
-      if (!me) { alert('Please log in first.'); return; }
+      if (!me) { showToast('Login Required', 'Please log in first.', 'error', false); return; }
       try {
         db.ref("users/" + me + "/ringtone").remove().then(() => {
           const el = document.getElementById('ringtonePreview');
           const nameEl = document.getElementById('ringtoneName');
           if (el) { el.src = ''; el.style.display = 'none'; }
           if (nameEl) nameEl.textContent = 'No ringtone uploaded';
-          alert('Ringtone removed.');
+          showToast('Ringtone Removed', 'Ringtone removed.', 'success');
         }).catch(() => {
           localStorage.removeItem('ringtone_local');
           const el = document.getElementById('ringtonePreview');
           const nameEl = document.getElementById('ringtoneName');
           if (el) { el.src = ''; el.style.display = 'none'; }
           if (nameEl) nameEl.textContent = 'No ringtone uploaded';
-          alert('Ringtone removed locally.');
+          showToast('Ringtone Removed', 'Ringtone removed locally.', 'info', false); 
         });
       } catch (err) {
         localStorage.removeItem('ringtone_local');
@@ -2723,7 +3313,7 @@
         const nameEl = document.getElementById('ringtoneName');
         if (el) { el.src = ''; el.style.display = 'none'; }
         if (nameEl) nameEl.textContent = 'No ringtone uploaded';
-        alert('Ringtone removed locally.');
+        showToast('Ringtone Removed', 'Ringtone removed locally.', 'info', false);
       }
     }
 
@@ -2736,14 +3326,7 @@
         time: Date.now()
       }).then(() => {
         document.getElementById("systemMsgText").value = "";
-        
-        // Show broadcast notification
-        const notif = document.createElement("div");
-        notif.style.cssText = "position: fixed; top: 20px; right: 20px; background: #7c3aed; color: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 2000; animation: slideIn 0.3s ease-out;";
-        notif.textContent = "✓ System message broadcast to Global!";
-        document.body.appendChild(notif);
-        
-        setTimeout(() => notif.remove(), 3000);
+        showToast('Broadcast Sent', 'System message broadcast to Global!', 'success');
       });
     }
 
@@ -2755,7 +3338,7 @@
       db.ref("users/" + me + "/displayName").set(cleanName).then(() => {
         document.getElementById("settingsDisplayName").textContent = cleanName;
         document.getElementById("valDisplayName").textContent = cleanName;
-        alert("Display name updated!");
+        showToast('Profile Updated', 'Display name updated!', 'success');
       });
     }
 
@@ -2766,18 +3349,18 @@
       db.ref("users/" + me + "/pin").once("value", s => {
         const storedPin = s.val() || USERS[me];
         if (currentPin !== storedPin) {
-          alert("Incorrect current PIN.");
+          showToast('PIN Error', 'Incorrect current PIN.', 'error', false);
           return;
         }
         
         const newPin = prompt("Enter new 4-digit PIN:");
         if (!newPin || newPin.length !== 4 || isNaN(newPin)) {
-          alert("PIN must be 4 digits.");
+          showToast('PIN Error', 'PIN must be 4 digits.', 'error', false);
           return;
         }
         
         db.ref("users/" + me + "/pin").set(newPin).then(() => {
-          alert("PIN updated successfully! Use this for your next login.");
+          showToast('PIN Updated', 'PIN updated successfully! Use this for your next login.', 'success');
         });
       });
     }
@@ -2859,7 +3442,7 @@
     drawStars();
   </script>
 
-  <div id="callWindow" class="hidden" style="display:none !important;">
+  <div id="callWindow" class="hidden" style="display:none;">
     <div class="call-header">
       <div>
         <strong id="callTitle">No active call</strong>
@@ -2872,14 +3455,26 @@
         <button id="callEnd" class="pill-btn" style="background:#f04747;color:white" title="End Call"><i class="fa-solid fa-phone-slash" aria-hidden="true"></i></button>
       </div>
     </div>
+    <div id="incomingCallState" class="incoming-call-state" style="display:none;">
+      <div class="incoming-banner">
+        <div class="incoming-avatar">
+          <img id="incomingCallerPfp" src="https://www.gravatar.com/avatar/0?d=mp&f=y" alt="Caller">
+        </div>
+        <div class="incoming-info">
+          <div class="incoming-title">Incoming call</div>
+          <div id="incomingCallerName" class="incoming-subtitle">Someone is calling</div>
+          <div id="incomingCallNote" class="incoming-subtitle">Open the call widget to accept or decline.</div>
+        </div>
+      </div>
+      <div class="incoming-actions">
+        <button class="pill-btn decline" id="incomingDecline" title="Decline" style="min-width:130px;"><i class="fa-solid fa-phone-slash"></i></button>
+        <button class="pill-btn accept" id="incomingAccept" title="Accept" style="min-width:130px;"><i class="fa-solid fa-phone"></i></button>
+      </div>
+    </div>
     <div class="call-body">
       <video id="callRemote" autoplay playsinline></video>
       <video id="callLocal" autoplay playsinline muted class="preview"></video>
       <audio id="callLocalAudio" autoplay style="display:none;"></audio>
-    </div>
-    <div id="incomingControls" style="display:none;padding:10px;border-top:1px solid rgba(255,255,255,0.04);gap:8px;justify-content:center;align-items:center;display:flex;">
-      <button id="incomingAccept" class="pill-btn" style="min-width:90px;background:#2fce73;color:#021">Accept</button>
-      <button id="incomingDecline" class="pill-btn" style="min-width:90px;background:#6b7280;color:white">Decline</button>
     </div>
     <div class="call-footer">
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
@@ -2932,6 +3527,7 @@
       const callRoomsRef = db.ref('callRooms');
       const userCallRoomsRef = db.ref('userCallRooms');
       const callSignalsRef = db.ref('callSignals');
+      const bugReportsRef = db.ref('bugReports');
 
       let currentCallRoomId = null;
       let currentCallRoomMeta = null;
@@ -2955,19 +3551,27 @@
       const incomingPrompted = new Set();
 
       function setText(el, text) { if (el) el.textContent = text || ''; }
-      function showCallWindow() { callWindow.classList.remove('hidden'); callWindow.style.display = 'flex'; }
-      function hideCallWindow() { callWindow.classList.add('hidden'); callWindow.style.display = 'none'; }
-      function showIncomingControls(roomId) {
+      function showCallWindow() { callWindow.classList.remove('hidden'); callWindow.style.setProperty('display', 'flex', 'important'); }
+      function hideCallWindow() { callWindow.classList.add('hidden'); callWindow.style.setProperty('display', 'none', 'important'); }
+      function showIncomingControls(roomId, meta) {
         incomingRoomPending = roomId;
-        const ic = document.getElementById('incomingControls');
-        if (ic) ic.style.display = 'flex';
+        const incomingState = document.getElementById('incomingCallState');
+        const nameEl = document.getElementById('incomingCallerName');
+        const noteEl = document.getElementById('incomingCallNote');
+        if (nameEl) nameEl.textContent = meta?.creator ? `${meta.creator} is calling` : 'Incoming call';
+        if (noteEl) noteEl.textContent = meta ? `${meta.mode === 'video' ? 'Video' : 'Voice'} call incoming` : 'Open the call widget to accept.';
+        if (incomingState) incomingState.style.display = 'flex';
+        callWindow.classList.add('incoming-state');
         callActionPanel.classList.add('incoming');
       }
       function hideIncomingControls() {
         incomingRoomPending = null;
+        const incomingState = document.getElementById('incomingCallState');
+        if (incomingState) incomingState.style.display = 'none';
         const ic = document.getElementById('incomingControls');
         if (ic) ic.style.display = 'none';
         callActionPanel.classList.remove('incoming');
+        if (callWindow) callWindow.classList.remove('incoming-state');
         try { stopRingtone(); } catch(e) {}
       }
       function formatDuration(ms) { const seconds = Math.floor(ms / 1000); const minutes = Math.floor(seconds / 60); return `${minutes}:${String(seconds % 60).padStart(2, '0')}`; }
@@ -2977,25 +3581,32 @@
       function renderSavedCallHistory() { const raw = localStorage.getItem('galaxytalk_history'); const history = raw ? JSON.parse(raw) : []; document.querySelectorAll('.call-history-entry').forEach(entry => entry.remove()); history.slice(0, 20).reverse().forEach(rec => { const el = document.createElement('div'); el.className = 'msg call-history-entry'; el.innerHTML = `<div style="font-weight:700">${rec.kind} • <span style='font-weight:400;font-size:12px;color:#98a0b3'>${rec.timestamp}</span></div><div style='font-size:13px;color:#b9bbbe'>Duration: ${rec.duration} • Strength: ${rec.strength} • ${rec.reason}</div>`; messages.prepend(el); }); }
       function saveCallHistory(record) { const key = 'galaxytalk_history'; const raw = localStorage.getItem(key); const arr = raw ? JSON.parse(raw) : []; arr.unshift(record); localStorage.setItem(key, JSON.stringify(arr.slice(0, 50))); }
       async function createLocalStream(useVideo) {
+        if (!localVid) return;
+        localVid.muted = true;
+        localVid.playsInline = true;
+        localVid.autoplay = true;
+
         if (localStream) {
           const videoTrack = localStream.getVideoTracks()[0];
           if (useVideo && !videoTrack) {
             try {
-              const extra = await navigator.mediaDevices.getUserMedia({video: true});
+              const extra = await navigator.mediaDevices.getUserMedia({video: { facingMode: 'user' }});
               const track = extra.getVideoTracks()[0];
-              localStream.addTrack(track);
+              if (track) localStream.addTrack(track);
             } catch(e) {
               // ignore
             }
           }
           if (videoTrack) videoTrack.enabled = useVideo;
           localVid.srcObject = localStream;
+          localVid.play().catch(() => {});
           if (localAudio) localAudio.srcObject = localStream;
           return;
         }
         try {
-          localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: useVideo});
+          localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: useVideo ? { facingMode: 'user' } : false});
           localVid.srcObject = localStream;
+          localVid.play().catch(() => {});
           if (localAudio) localAudio.srcObject = localStream;
           return;
         } catch (err) {
@@ -3026,7 +3637,7 @@
             if (localAudio) localAudio.srcObject = localStream;
             return;
           } catch (e) {
-            alert('Could not access microphone/camera: ' + e.message);
+            showToast('Media Error', 'Could not access microphone/camera: ' + e.message, 'error', false);
             throw e;
           }
         }
@@ -3036,8 +3647,18 @@
       function setStrength(strength) { strengthText.textContent = strength; const colors = { Strong: '#2fe08f', Medium: '#f2cf3f', Weak: '#f27b7b' }; bars.querySelectorAll('span').forEach(span => span.style.background = colors[strength] || '#2f3948'); }
       function updateDuration() { if (!startTime) return; callDuration.textContent = formatDuration(Date.now() - startTime); callTimer = requestAnimationFrame(updateDuration); }
       async function updateStats() { if (!pc) return; try { const stats = await pc.getStats(); let bytes = 0; let rtt = 1000; stats.forEach(report => { if (report.type === 'inbound-rtp' && report.kind === 'video') { bytes += report.bytesReceived || 0; } if (report.type === 'candidate-pair' && report.currentRoundTripTime != null) { rtt = Math.min(rtt, report.currentRoundTripTime * 1000); } }); let bitrate = 0; if (bytesPrev && bytes > bytesPrev) { bitrate = ((bytes - bytesPrev) * 8) / 1.5; } bytesPrev = bytes; if (bitrate > 2000 || rtt < 100) { setStrength('Strong'); } else if (bitrate > 500 || rtt < 250) { setStrength('Medium'); } else { setStrength('Weak'); } } catch (err) {} }
+      function formatTimestamp(timestamp) { const date = new Date(timestamp); return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`; }
       function cleanupSignalListener() { if (roomSignalRef) { roomSignalRef.off('child_added'); roomSignalRef = null; } }
-      async function createPeerConnection() { if (pc) { try { pc.close(); } catch (err) {} } pc = new RTCPeerConnection({iceServers:[{urls:['stun:stun.l.google.com:19302']}]}); remoteStream = new MediaStream(); remoteVid.srcObject = remoteStream; pc.ontrack = event => { event.streams[0].getTracks().forEach(track => remoteStream.addTrack(track)); }; pc.onconnectionstatechange = () => { if (!pc) return; if (pc.connectionState === 'connected') { updateRoomStatus('connected'); if (!startTime) startTime = Date.now(); if (!callTimer) updateDuration(); } if (['disconnected','failed','closed'].includes(pc.connectionState)) { endCall('Disconnected'); } }; pc.onicecandidate = event => { if (event.candidate && roomSignalRef) roomSignalRef.push({from: me, type: 'candidate', payload: event.candidate, timestamp: Date.now()}); }; if (localStream) { localStream.getTracks().forEach(track => pc.addTrack(track, localStream)); } }
+      async function createPeerConnection() { if (pc) { try { pc.close(); } catch (err) {} } pc = new RTCPeerConnection({iceServers:[{urls:['stun:stun.l.google.com:19302']}]}); remoteStream = new MediaStream(); if (remoteVid) {
+          remoteVid.srcObject = remoteStream;
+          remoteVid.playsInline = true;
+          remoteVid.autoplay = true;
+          remoteVid.play().catch(() => {});
+        }
+        pc.ontrack = event => { event.streams[0].getTracks().forEach(track => remoteStream.addTrack(track)); };
+        pc.onconnectionstatechange = () => { if (!pc) return; if (pc.connectionState === 'connected') { updateRoomStatus('connected'); if (!startTime) startTime = Date.now(); if (!callTimer) updateDuration(); } if (['disconnected','failed','closed'].includes(pc.connectionState)) { endCall('Disconnected'); } };
+        pc.onicecandidate = event => { if (event.candidate && roomSignalRef) roomSignalRef.push({from: me, type: 'candidate', payload: event.candidate, timestamp: Date.now()}); };
+        if (localStream) { localStream.getTracks().forEach(track => pc.addTrack(track, localStream)); } }
       async function sendSignal(type, payload) { if (!roomSignalRef) return; await roomSignalRef.push({from: me, type, payload, timestamp: Date.now()}); }
       async function handleSignal(signal) { if (!signal || signal.from === me) return; const payload = signal.payload; if (signal.type === 'offer') { if (!pc) { await createLocalStream(currentCallRoomMeta.mode === 'video'); await createPeerConnection(); } await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp)); const answer = await pc.createAnswer(); await pc.setLocalDescription(answer); await sendSignal('answer', {sdp: pc.localDescription}); } if (signal.type === 'answer') { if (pc) await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp)).catch(() => {}); } if (signal.type === 'candidate') { if (pc) await pc.addIceCandidate(payload).catch(() => {}); } }
       function attachSignalListener(roomId) { cleanupSignalListener(); roomSignalRef = callSignalsRef.child(roomId); roomSignalRef.on('child_added', snapshot => { const signal = snapshot.val(); if (!signal) return; handleSignal(signal); }); }
@@ -3050,41 +3671,43 @@
           const metaSnap = await callRoomsRef.child(roomId).once('value');
           const meta = metaSnap.val();
           if (!meta || meta.status !== 'calling') return;
-          if (meta.creator === me) return;
+          const creator = (meta.creator || '').toString().toLowerCase();
+          if (creator === me.toLowerCase()) return;
           if (meta.type === 'direct' && meta.target !== me) return;
 
-          // Show a non-blocking incoming call notification with Accept/Decline
           const noteId = 'incoming-' + roomId;
           if (document.getElementById(noteId)) return;
           const notif = document.createElement('div');
           notif.id = noteId;
           notif.style.cssText = 'position:fixed;top:20px;right:20px;background:#1f1b2e;color:white;padding:12px 16px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.4);z-index:1200;';
-          notif.innerHTML = `<div style="font-weight:700;margin-bottom:6px">Incoming ${meta.mode} call from ${meta.creator}</div>`;
+          notif.innerHTML = `<div style="font-weight:700;margin-bottom:6px"><i class='fa-solid fa-phone'></i> Incoming ${meta.mode} call</div><div style='font-size:13px;color:#c7d2fe;margin-bottom:8px;'>From ${meta.creator}</div>`;
           const accept = document.createElement('button');
-          accept.style.cssText = 'margin-right:8px;padding:6px 10px;border-radius:8px;border:none;background:#2fce73;color:#021;cursor:pointer;font-weight:700';
-          accept.textContent = 'Accept';
+          accept.style.cssText = 'margin-right:8px;padding:10px 12px;border-radius:10px;border:none;background:#2fce73;color:#021;cursor:pointer;font-weight:700;font-size:16px;';
+          accept.innerHTML = '<i class="fa-solid fa-phone"></i>';
+          accept.title = 'Accept';
           accept.onclick = () => { try { stopRingtone(); } catch(e) {} incomingRoomPending = roomId; joinCallRoom(roomId); notif.remove(); };
           const decline = document.createElement('button');
-          decline.style.cssText = 'padding:6px 10px;border-radius:8px;border:none;background:#6b7280;color:white;cursor:pointer';
-          decline.textContent = 'Decline';
+          decline.style.cssText = 'padding:10px 12px;border-radius:10px;border:none;background:#ef4444;color:white;cursor:pointer;font-size:16px;';
+          decline.innerHTML = '<i class="fa-solid fa-phone-slash"></i>';
+          decline.title = 'Decline';
           decline.onclick = () => { declineIncoming(roomId); notif.remove(); };
           notif.appendChild(accept);
           notif.appendChild(decline);
           document.body.appendChild(notif);
-          // also mark incoming on the call action panel so user can open the call tab
           incomingRoomPending = roomId;
           callActionPanel.classList.add('incoming');
           callActionPanel.title = 'Incoming ' + meta.mode + ' call';
-          // play ringtone if available
+          showIncomingControls(roomId, meta);
+          showCallWindow();
           try { playRingtone(); } catch(e) {}
         });
       }
       function getCurrentTarget() { return window.currentChatPeer || null; }
       async function saveCallRoomMeta(roomId, meta) { await callRoomsRef.child(roomId).set(meta); }
       async function updateCallRoomStatus(status) { if (!currentCallRoomId) return; await callRoomsRef.child(currentCallRoomId).update({status}); }
-      async function createCallRoom(roomId, mode, type, targetUser) { if (!me) { alert('Please log in first.'); return; } if (currentCallRoomId && currentCallRoomId !== roomId) { if (!confirm('Leave current call and start a new one?')) return; await endCall('Switched call'); } currentCallRoomId = roomId; currentCallRoomMeta = { id: roomId, creator: me, target: targetUser || null, mode, type, status: 'calling', createdAt: Date.now() }; await saveCallRoomMeta(roomId, currentCallRoomMeta); await userCallRoomsRef.child(me).child(roomId).set(true); if (targetUser) { await userCallRoomsRef.child(targetUser).child(roomId).set(true); } attachSignalListener(roomId); await createLocalStream(mode === 'video'); await createPeerConnection(); updateCallHeader(currentCallRoomMeta, roomId, 'Calling'); showCallWindow(); const offer = await pc.createOffer(); await pc.setLocalDescription(offer); await sendSignal('offer', {sdp: pc.localDescription}); }
+      async function createCallRoom(roomId, mode, type, targetUser) { if (!me) { showToast('Login Required', 'Please log in first.', 'error', false); return; } if (currentCallRoomId && currentCallRoomId !== roomId) { if (!confirm('Leave current call and start a new one?')) return; await endCall('Switched call'); } currentCallRoomId = roomId; currentCallRoomMeta = { id: roomId, creator: me, target: targetUser || null, mode, type, status: 'calling', createdAt: Date.now() }; await saveCallRoomMeta(roomId, currentCallRoomMeta); if (targetUser) { await userCallRoomsRef.child(targetUser).child(roomId).set(true); } await userCallRoomsRef.child(me).child(roomId).set(true); attachSignalListener(roomId); await createLocalStream(mode === 'video'); await createPeerConnection(); updateCallHeader(currentCallRoomMeta, roomId, 'Calling'); showCallWindow(); const offer = await pc.createOffer(); await pc.setLocalDescription(offer); await sendSignal('offer', {sdp: pc.localDescription}); }
       async function createCallRoom(roomId, mode, type, targetUser) {
-        if (!me) { alert('Please log in first.'); return; }
+        if (!me) { showToast('Login Required', 'Please log in first.', 'error', false); return; }
         if (currentCallRoomId && currentCallRoomId !== roomId) { if (!confirm('Leave current call and start a new one?')) return; await endCall('Switched call'); }
         currentCallRoomId = roomId;
         currentCallRoomMeta = { id: roomId, creator: me, target: targetUser || null, mode, type, status: 'calling', createdAt: Date.now() };
@@ -3103,12 +3726,12 @@
         stopRingtone();
       }
       async function joinCallRoom(roomId) {
-        if (!me) { alert('Please log in first.'); return; }
+        if (!me) { showToast('Login Required', 'Please log in first.', 'error', false); return; }
         stopRingtone();
         const roomSnap = await callRoomsRef.child(roomId).once('value');
         const meta = roomSnap.val();
-        if (!meta) { alert('Call room not found for code: ' + roomId); return; }
-        if (meta.status === 'ended') { alert('This call room has ended.'); return; }
+        if (!meta) { showToast('Call Error', 'Call room not found for code: ' + roomId, 'error', false); return; }
+        if (meta.status === 'ended') { showToast('Call Error', 'This call room has ended.', 'error', false); return; }
         if (currentCallRoomId && currentCallRoomId !== roomId) { if (!confirm('Leave current call and join the new room?')) return; await endCall('Switched call'); }
         currentCallRoomId = roomId;
         currentCallRoomMeta = meta;
@@ -3120,9 +3743,60 @@
         ensureAppVisible();
         showCallWindow();
       }
-      async function startDirectCall(mode) { const target = getCurrentTarget(); if (!target) { alert('Open a DM with someone to start a direct call.'); return; } const roomId = generateRoomId(); await createCallRoom(roomId, mode, 'direct', target); alert('Call created. Share this join code: ' + roomId); }
-      async function createJoinableRoom(mode) { const roomId = generateRoomId(); await createCallRoom(roomId, mode, 'group', null); alert('Joinable room created. Share this join code: ' + roomId); }
-      async function promptJoinCode() { if (!me) { alert('Please log in first to join calls.'); return; } showJoinOverlay(); }
+      async function startDirectCall(mode) { const target = getCurrentTarget(); if (!target) { showToast('Call Error', 'Open a DM with someone to start a direct call.', 'error', false); return; } const roomId = generateRoomId(); await createCallRoom(roomId, mode, 'direct', target); showToast('Call Created', 'Share this join code: ' + roomId, 'success'); }
+      async function createJoinableRoom(mode) { const roomId = generateRoomId(); await createCallRoom(roomId, mode, 'group', null); showToast('Call Room Created', 'Share this join code: ' + roomId, 'success'); }
+      async function reportBug() {
+        const text = document.getElementById('bugReportText')?.value.trim();
+        if (!text) {
+          showToast('Bug Report', 'Describe the issue before sending.', 'error', false);
+          return;
+        }
+        const payload = {
+          sender: me || 'Unknown',
+          displayName: document.getElementById('valDisplayName')?.textContent || me || 'Unknown',
+          timestamp: Date.now(),
+          message: text,
+          pfp: document.getElementById('myPfp')?.src || ''
+        };
+        await bugReportsRef.push(payload);
+        document.getElementById('bugReportText').value = '';
+        document.getElementById('bugReportStatus').textContent = 'Bug report submitted. Admin can review it in the dashboard.';
+        showToast('Bug Report Sent', 'Thanks! Your issue has been shared with admin.', 'success');
+        loadBugReports();
+      }
+      async function loadBugReports() {
+        const list = document.getElementById('adminBugList');
+        const summary = document.getElementById('adminBugSummary');
+        const bugCountEl = document.getElementById('adminBugCount');
+        if (!list || !summary || !bugCountEl) return;
+        list.innerHTML = '<div style="color:#9ca3af;font-size:13px;padding:10px 0;">Loading reports...</div>';
+        const snapshot = await bugReportsRef.orderByChild('timestamp').once('value').catch(() => ({ val: () => null, exists: () => false }));
+        const reports = snapshot.exists() ? Object.entries(snapshot.val() || {}).map(([id, report]) => ({ id, ...report })) : [];
+        reports.sort((a,b) => b.timestamp - a.timestamp);
+        bugCountEl.textContent = reports.length;
+        summary.textContent = reports.length ? `${reports.length} report${reports.length === 1 ? '' : 's'} received` : 'No reports yet';
+        if (!reports.length) {
+          list.innerHTML = '<div style="color:#9ca3af;font-size:13px;padding:10px 0;">No bug reports yet.</div>';
+          return;
+        }
+        list.innerHTML = '';
+        reports.slice(0, 10).forEach(report => {
+          const entry = document.createElement('div');
+          entry.className = 'bug-report-entry';
+          entry.innerHTML = `
+            <div class="bug-report-avatar"><img src="${report.pfp || 'https://www.gravatar.com/avatar/0?d=mp&f=y'}" alt="${report.sender}"></div>
+            <div>
+              <div class="bug-report-meta">
+                <div><strong>${report.sender}</strong> (${report.displayName || report.sender})</div>
+                <div>${formatTimestamp(report.timestamp)}</div>
+              </div>
+              <div class="bug-report-message">${(report.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>
+            </div>
+          `;
+          list.appendChild(entry);
+        });
+      }
+      async function promptJoinCode() { if (!me) { showToast('Login Required', 'Please log in first to join calls.', 'error', false); return; } showJoinOverlay(); }
       function showJoinOverlay() {
         const overlay = document.getElementById('joinOverlay');
         overlay.classList.remove('hidden');
@@ -3162,7 +3836,7 @@
         const settingsBtn = document.getElementById('settingsBtn'); if (settingsBtn) settingsBtn.classList.remove('hidden');
       }
       async function restoreLocalVideoTrack() { if (!pc || !localStream) return; const videoTrack = localStream.getVideoTracks()[0]; if (!videoTrack) return; const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video'); if (sender) sender.replaceTrack(videoTrack); localVid.srcObject = localStream; }
-      async function shareScreen() { if (!pc) { alert('Join a call first.'); return; } try { const screenStream = await navigator.mediaDevices.getDisplayMedia({video: true}); screenTrack = screenStream.getVideoTracks()[0]; const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video'); if (sender) { sender.replaceTrack(screenTrack); } else { pc.addTrack(screenTrack, screenStream); } localVid.srcObject = screenStream; screenTrack.onended = restoreLocalVideoTrack; } catch (err) { alert('Screen share failed: ' + err.message); } }
+      async function shareScreen() { if (!pc) { showToast('Call Error', 'Join a call first.', 'error', false); return; } try { const screenStream = await navigator.mediaDevices.getDisplayMedia({video: true}); screenTrack = screenStream.getVideoTracks()[0]; const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video'); if (sender) { sender.replaceTrack(screenTrack); } else { pc.addTrack(screenTrack, screenStream); } localVid.srcObject = screenStream; screenTrack.onended = restoreLocalVideoTrack; } catch (err) { showToast('Screen Share Error', 'Screen share failed: ' + err.message, 'error', false); } }
       async function endCall(reason = 'Ended') { if (currentCallRoomId) { await updateCallRoomStatus('ended'); userCallRoomsRef.child(me).child(currentCallRoomId).remove().catch(() => {}); } if (roomSignalRef) { roomSignalRef.off(); roomSignalRef = null; } if (pc) { try { pc.close(); } catch (err) {} pc = null; } stopLocalStream(); stopScreenTrack(); if (remoteStream) { remoteStream.getTracks().forEach(track => track.stop()); remoteStream = null; } if (callTimer) { cancelAnimationFrame(callTimer); callTimer = null; } const duration = startTime ? formatDuration(Date.now() - startTime) : '00:00'; saveCallHistory({kind: 'Call', timestamp: new Date().toLocaleString(), duration, strength: strengthText.textContent || 'Unknown', reason}); renderSavedCallHistory(); hideCallWindow(); startTime = null; setText(callDuration, '00:00'); setText(callTitle, 'No active call'); setText(callStatus, 'Ready'); setText(callJoinCode, ''); currentCallRoomId = null; currentCallRoomMeta = null; }
       function updateRoomStatus(status) { if (currentCallRoomMeta) { currentCallRoomMeta.status = status; updateCallHeader(currentCallRoomMeta, currentCallRoomId, status); } }
       voiceCallBtn.addEventListener('click', () => startDirectCall('voice'));
@@ -3172,10 +3846,8 @@
       callActionPanel.addEventListener('click', () => {
         if (callActionPanel.classList.contains('incoming')) {
           showCallWindow();
-          if (incomingRoomPending) {
-            const ic = document.getElementById('incomingControls');
-            if (ic) ic.style.display = 'flex';
-          }
+          const incomingState = document.getElementById('incomingCallState');
+          if (incomingState) incomingState.style.display = 'flex';
         }
       });
 
@@ -3294,6 +3966,8 @@
       function initCallSystem() { if (!me) return; callActionPanel.classList.remove('hidden'); callActionPanel.style.display = ''; watchIncomingCalls(); renderSavedCallHistory(); }
       window.initCallSystem = initCallSystem;
       window.renderSavedCallHistory = renderSavedCallHistory;
+      window.reportBug = reportBug;
+      window.loadBugReports = loadBugReports;
     })();
   </script>
 
