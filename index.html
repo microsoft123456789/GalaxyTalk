@@ -1177,13 +1177,15 @@
     .resize-bottom-right { bottom: 0; right: 0; cursor: nwse-resize; }
 
     #callWindow.fullscreen {
-      top: 0;
-      right: 0;
-      left: 0;
-      bottom: 0;
-      width: auto;
-      height: auto;
-      border-radius: 0;
+      top: 0 !important;
+      right: 0 !important;
+      left: 0 !important;
+      bottom: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 0 !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
     }
 
     #callWindow.hide {
@@ -1346,13 +1348,25 @@
     }
 
     #callWindow .incoming-actions .accept {
-      background: linear-gradient(135deg,#2dd4bf,#14b8a6);
-      color: #021;
+      background: linear-gradient(135deg, #2dd4bf 0%, #06b6d4 50%, #0891b2 100%);
+      color: #fff;
+      box-shadow: 0 20px 40px rgba(6, 182, 212, 0.3);
+    }
+
+    #callWindow .incoming-actions .accept:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 24px 50px rgba(6, 182, 212, 0.4);
     }
 
     #callWindow .incoming-actions .decline {
-      background: linear-gradient(135deg,#ef4444,#f97316);
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%);
       color: white;
+      box-shadow: 0 20px 40px rgba(239, 68, 68, 0.3);
+    }
+
+    #callWindow .incoming-actions .decline:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 24px 50px rgba(239, 68, 68, 0.4);
     }
 
     #callWindow.incoming-state .call-body,
@@ -2605,7 +2619,12 @@
     }
 
     function buildMessageHTML(m, userData) {
-      const time = new Date(m.time || Date.now()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      const date = new Date(m.time || Date.now());
+      const time = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      const fullDate = date.toLocaleDateString([], {month: 'short', day: 'numeric'});
+      const isToday = date.toDateString() === new Date().toDateString();
+      const displayDate = isToday ? 'Today' : fullDate;
+      
       const urlRegex = /(https?:\/\/[^\s]+)/g;
       const formattedText = (m.text || '').replace(urlRegex, url =>
         `<a href="${url}" target="_blank" style="color:#4285f4;text-decoration:underline;">${url}</a>`
@@ -2621,11 +2640,24 @@
         }
       }
       return `
-        <div class="msg-pfp"><img src="${userData.pfp}"></div>
+        <div class="msg-pfp"><img src="${userData.pfp}" title="${userData.displayName}"></div>
         <div class="msg-content">
-          <div class="msg-user">${userData.displayName} <span class="msg-time">${time}</span></div>
+          <div class="msg-user">${userData.displayName} <span class="msg-time" title="${displayDate} at ${time}">${time}</span></div>
           ${content}
+          <div class="msg-reactions" id="reactions-${m.time || 'msg'}">
+            <button class="reaction-btn" onclick="addReaction(this, '👍')">👍</button>
+            <button class="reaction-btn" onclick="addReaction(this, '❤️')">❤️</button>
+            <button class="reaction-btn" onclick="addReaction(this, '😂')">😂</button>
+            <button class="reaction-btn" onclick="addReaction(this, '🔥')">🔥</button>
+          </div>
         </div>`;
+    }
+
+    function addReaction(btn, emoji) {
+      btn.textContent = emoji;
+      btn.style.opacity = '1';
+      btn.style.transform = 'scale(1.2)';
+      setTimeout(() => btn.style.transform = 'scale(1)', 200);
     }
 
     function openChat(u) {
@@ -3599,41 +3631,54 @@
           }
           if (videoTrack) videoTrack.enabled = useVideo;
           localVid.srcObject = localStream;
-          localVid.play().catch(() => {});
+          try { await localVid.play(); } catch (e) { console.error('Play error:', e); }
           if (localAudio) localAudio.srcObject = localStream;
           return;
         }
         try {
-          localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: useVideo ? { facingMode: 'user' } : false});
+          localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: useVideo ? { facingMode: 'user', width: {ideal: 1280}, height: {ideal: 720} } : false});
           localVid.srcObject = localStream;
-          localVid.play().catch(() => {});
+          try { await localVid.play(); } catch (e) { console.error('Play error:', e); }
           if (localAudio) localAudio.srcObject = localStream;
           return;
         } catch (err) {
-          // If video was requested but failed, try enumerating cameras and attempt each
-          if (useVideo && navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+          // If video was requested but failed, try with different constraints
+          if (useVideo) {
             try {
-              const devices = await navigator.mediaDevices.enumerateDevices();
-              const cams = devices.filter(d => d.kind === 'videoinput');
-              for (let i = 0; i < cams.length; i++) {
-                const cam = cams[i];
+              localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: {width: {max: 640}, height: {max: 480}}});
+              localVid.srcObject = localStream;
+              try { await localVid.play(); } catch (e) { console.error('Play error:', e); }
+              if (localAudio) localAudio.srcObject = localStream;
+              return;
+            } catch (e2) {
+              // Try enumerating cameras
+              if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
                 try {
-                  localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: { deviceId: { exact: cam.deviceId } }});
-                  localVid.srcObject = localStream;
-                  if (localAudio) localAudio.srcObject = localStream;
-                  return;
+                  const devices = await navigator.mediaDevices.enumerateDevices();
+                  const cams = devices.filter(d => d.kind === 'videoinput');
+                  for (let i = 0; i < cams.length; i++) {
+                    const cam = cams[i];
+                    try {
+                      localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: { deviceId: { exact: cam.deviceId }, width: {max: 640} }});
+                      localVid.srcObject = localStream;
+                      try { await localVid.play(); } catch (e) { console.error('Play error:', e); }
+                      if (localAudio) localAudio.srcObject = localStream;
+                      return;
+                    } catch (e) {
+                      // try next camera
+                    }
+                  }
                 } catch (e) {
-                  // try next
+                  // fallthrough
                 }
               }
-            } catch (e) {
-              // fallthrough
             }
           }
           // fallback to audio-only
           try {
             localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
             localVid.srcObject = localStream;
+            try { await localVid.play(); } catch (e) { console.error('Play error:', e); }
             if (localAudio) localAudio.srcObject = localStream;
             return;
           } catch (e) {
@@ -3675,25 +3720,6 @@
           if (creator === me.toLowerCase()) return;
           if (meta.type === 'direct' && meta.target !== me) return;
 
-          const noteId = 'incoming-' + roomId;
-          if (document.getElementById(noteId)) return;
-          const notif = document.createElement('div');
-          notif.id = noteId;
-          notif.style.cssText = 'position:fixed;top:20px;right:20px;background:#1f1b2e;color:white;padding:12px 16px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.4);z-index:1200;';
-          notif.innerHTML = `<div style="font-weight:700;margin-bottom:6px"><i class='fa-solid fa-phone'></i> Incoming ${meta.mode} call</div><div style='font-size:13px;color:#c7d2fe;margin-bottom:8px;'>From ${meta.creator}</div>`;
-          const accept = document.createElement('button');
-          accept.style.cssText = 'margin-right:8px;padding:10px 12px;border-radius:10px;border:none;background:#2fce73;color:#021;cursor:pointer;font-weight:700;font-size:16px;';
-          accept.innerHTML = '<i class="fa-solid fa-phone"></i>';
-          accept.title = 'Accept';
-          accept.onclick = () => { try { stopRingtone(); } catch(e) {} incomingRoomPending = roomId; joinCallRoom(roomId); notif.remove(); };
-          const decline = document.createElement('button');
-          decline.style.cssText = 'padding:10px 12px;border-radius:10px;border:none;background:#ef4444;color:white;cursor:pointer;font-size:16px;';
-          decline.innerHTML = '<i class="fa-solid fa-phone-slash"></i>';
-          decline.title = 'Decline';
-          decline.onclick = () => { declineIncoming(roomId); notif.remove(); };
-          notif.appendChild(accept);
-          notif.appendChild(decline);
-          document.body.appendChild(notif);
           incomingRoomPending = roomId;
           callActionPanel.classList.add('incoming');
           callActionPanel.title = 'Incoming ' + meta.mode + ' call';
@@ -3745,25 +3771,37 @@
       }
       async function startDirectCall(mode) { const target = getCurrentTarget(); if (!target) { showToast('Call Error', 'Open a DM with someone to start a direct call.', 'error', false); return; } const roomId = generateRoomId(); await createCallRoom(roomId, mode, 'direct', target); showToast('Call Created', 'Share this join code: ' + roomId, 'success'); }
       async function createJoinableRoom(mode) { const roomId = generateRoomId(); await createCallRoom(roomId, mode, 'group', null); showToast('Call Room Created', 'Share this join code: ' + roomId, 'success'); }
-      async function reportBug() {
+    async function reportBug() {
+        if (!db || !bugReportsRef) {
+          showToast('Bug Report Error', 'Firebase not ready. Please try again.', 'error', false);
+          return;
+        }
         const text = document.getElementById('bugReportText')?.value.trim();
         if (!text) {
           showToast('Bug Report', 'Describe the issue before sending.', 'error', false);
           return;
         }
-        const payload = {
-          sender: me || 'Unknown',
-          displayName: document.getElementById('valDisplayName')?.textContent || me || 'Unknown',
-          timestamp: Date.now(),
-          message: text,
-          pfp: document.getElementById('myPfp')?.src || ''
-        };
-        await bugReportsRef.push(payload);
-        document.getElementById('bugReportText').value = '';
-        document.getElementById('bugReportStatus').textContent = 'Bug report submitted. Admin can review it in the dashboard.';
-        showToast('Bug Report Sent', 'Thanks! Your issue has been shared with admin.', 'success');
-        loadBugReports();
+        try {
+          const payload = {
+            sender: me || 'Unknown',
+            displayName: document.getElementById('valDisplayName')?.textContent || me || 'Unknown',
+            timestamp: Date.now(),
+            message: text,
+            pfp: document.getElementById('myPfp')?.src || 'https://www.gravatar.com/avatar/0?d=mp&f=y'
+          };
+          const ref = await bugReportsRef.push(payload);
+          document.getElementById('bugReportText').value = '';
+          document.getElementById('bugReportStatus').textContent = 'Bug report submitted! Admin can review it in the dashboard.';
+          showToast('Bug Report Sent', 'Thanks! Your issue has been shared with admin.', 'success');
+          if (me === 'Elnathan') loadBugReports();
+        } catch (err) {
+          console.error('Bug report error:', err);
+          showToast('Bug Report Error', 'Failed to submit: ' + err.message, 'error', false);
+        }
       }
+      let bugReportListener = null;
+      let bugReportCache = {};
+
       async function loadBugReports() {
         const list = document.getElementById('adminBugList');
         const summary = document.getElementById('adminBugSummary');
@@ -3780,21 +3818,126 @@
           return;
         }
         list.innerHTML = '';
+        bugReportCache = {};
         reports.slice(0, 10).forEach(report => {
-          const entry = document.createElement('div');
-          entry.className = 'bug-report-entry';
-          entry.innerHTML = `
-            <div class="bug-report-avatar"><img src="${report.pfp || 'https://www.gravatar.com/avatar/0?d=mp&f=y'}" alt="${report.sender}"></div>
-            <div>
-              <div class="bug-report-meta">
-                <div><strong>${report.sender}</strong> (${report.displayName || report.sender})</div>
-                <div>${formatTimestamp(report.timestamp)}</div>
-              </div>
-              <div class="bug-report-message">${(report.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>
-            </div>
-          `;
-          list.appendChild(entry);
+          bugReportCache[report.id] = report;
+          renderBugReport(report);
         });
+        startBugReportListener();
+      }
+
+      function renderBugReport(report) {
+        const list = document.getElementById('adminBugList');
+        if (!list) return;
+        let entry = document.getElementById(`bug-entry-${report.id}`);
+        const isNew = !entry;
+        if (isNew) {
+          entry = document.createElement('div');
+          entry.id = `bug-entry-${report.id}`;
+          list.insertBefore(entry, list.firstChild);
+        }
+        entry.className = 'bug-report-entry';
+        entry.innerHTML = `
+          <div class="bug-report-avatar"><img src="${report.pfp || 'https://www.gravatar.com/avatar/0?d=mp&f=y'}" alt="${report.sender}"></div>
+          <div style="flex:1;">
+            <div class="bug-report-meta">
+              <div><strong>${report.sender}</strong> (${report.displayName || report.sender})</div>
+              <div>${formatTimestamp(report.timestamp)}</div>
+            </div>
+            <div class="bug-report-message">${(report.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>
+            <div id="bug-replies-${report.id}" style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);"></div>
+            <div style="display:flex;gap:8px;margin-top:10px;">
+              <textarea id="bug-reply-input-${report.id}" placeholder="Type a reply..." style="flex:1;background:#0e0018;color:white;border:1px solid rgba(124,58,237,0.3);border-radius:8px;padding:8px;font-size:12px;resize:vertical;min-height:50px;"></textarea>
+              <button onclick="submitBugReply('${report.id}')" style="padding:8px 12px;background:linear-gradient(135deg,#7c3aed,#ec4899);border:none;border-radius:8px;color:white;cursor:pointer;font-size:12px;height:fit-content;">Reply</button>
+            </div>
+          </div>
+        `;
+        loadBugReplies(report.id);
+        if (isNew) {
+          entry.style.animation = 'slideIn 0.3s ease-out';
+        }
+      }
+
+      function startBugReportListener() {
+        if (bugReportListener) return;
+        bugReportListener = bugReportsRef.on('child_added', snapshot => {
+          const reportId = snapshot.key;
+          const report = snapshot.val();a
+          if (reportId && report && !bugReportCache[reportId]) {
+            bugReportCache[reportId] = { id: reportId, ...report };
+            const list = document.getElementById('adminBugList');
+            if (list && list.querySelector('div[style*="Loading"]')) {
+              list.innerHTML = '';
+            }
+            renderBugReport({ id: reportId, ...report });
+            const bugCountEl = document.getElementById('adminBugCount');
+            const summary = document.getElementById('adminBugSummary');
+            if (bugCountEl) bugCountEl.textContent = Object.keys(bugReportCache).length;
+            if (summary) summary.textContent = Object.keys(bugReportCache).length + ' report(s) received';
+            showToast('New Bug Report', 'A new bug report has been submitted.', 'info', true, 3000);
+          }
+        });
+        bugReportsRef.on('child_changed', snapshot => {
+          const reportId = snapshot.key;
+          const report = snapshot.val();
+          if (reportId && report) {
+            bugReportCache[reportId] = { id: reportId, ...report };
+            loadBugReplies(reportId);
+          }
+        });
+      }
+
+      function stopBugReportListener() {
+        if (bugReportListener) {
+          bugReportsRef.off();
+          bugReportListener = null;
+        }
+      }
+
+      async function loadBugReplies(reportId) {
+        const repliesDiv = document.getElementById(`bug-replies-${reportId}`);
+        if (!repliesDiv) return;
+        try {
+          const snapshot = await bugReportsRef.child(reportId).child('replies').once('value');
+          const replies = snapshot.exists() ? Object.values(snapshot.val() || {}) : [];
+          replies.sort((a, b) => a.timestamp - b.timestamp);
+          if (replies.length === 0) return;
+          repliesDiv.innerHTML = '<div style="font-size:12px;color:#a5b4fc;margin-bottom:8px;"><strong>Admin Replies:</strong></div>';
+          replies.forEach(reply => {
+            const replyEl = document.createElement('div');
+            replyEl.style.cssText = 'background:rgba(99,102,241,0.1);border-left:3px solid #7c3aed;padding:8px 12px;margin-bottom:6px;border-radius:4px;font-size:12px;';
+            replyEl.innerHTML = `
+              <div style="color:#e0e7ff;margin-bottom:4px;"><strong>Admin:</strong> ${formatTimestamp(reply.timestamp)}</div>
+              <div style="color:#c7d2fe;">${(reply.text || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>
+            `;
+            repliesDiv.appendChild(replyEl);
+          });
+        } catch (e) {
+          console.error('Error loading replies:', e);
+        }
+      }
+
+      async function submitBugReply(reportId) {
+        const input = document.getElementById(`bug-reply-input-${reportId}`);
+        if (!input) return;
+        const text = input.value.trim();
+        if (!text) {
+          showToast('Reply Error', 'Type a message before replying.', 'error', false);
+          return;
+        }
+        try {
+          await bugReportsRef.child(reportId).child('replies').push({
+            text: text,
+            timestamp: Date.now(),
+            admin: me
+          });
+          input.value = '';
+          showToast('Reply Sent', 'Your reply has been added to the bug report.', 'success');
+          await loadBugReplies(reportId);
+        } catch (e) {
+          console.error('Reply error:', e);
+          showToast('Reply Error', 'Failed to submit reply: ' + e.message, 'error', false);
+        }
       }
       async function promptJoinCode() { if (!me) { showToast('Login Required', 'Please log in first to join calls.', 'error', false); return; } showJoinOverlay(); }
       function showJoinOverlay() {
@@ -3968,6 +4111,8 @@
       window.renderSavedCallHistory = renderSavedCallHistory;
       window.reportBug = reportBug;
       window.loadBugReports = loadBugReports;
+      window.submitBugReply = submitBugReply;
+      window.loadBugReplies = loadBugReplies;
     })();
   </script>
 
